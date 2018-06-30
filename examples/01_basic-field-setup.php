@@ -4,16 +4,7 @@
 $this->rg->assets->add($this->config->paths->siteModules . 'RockGrid/lib/moment.min.js');
 
 // set data for this grid via rockfinder
-$this->setData(new RockFinder("template=project, sort=-created", [
+$this->setData(new RockFinder("sort=-created", [
   'title',
-  'pl_name',
-  'deadline',
+  'created',
 ]));
-
-// optional: pass variables to javascript
-$this->js([
-  'show' => __('Projekt anzeigen'),
-  'pl_name' => __('Projektleiter'),
-  'title' => __('Bezeichnung'),
-  'deadline' => __('Deadline'),
-]);

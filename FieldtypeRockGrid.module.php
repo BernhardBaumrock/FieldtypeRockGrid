@@ -176,6 +176,7 @@ class FieldtypeRockGrid extends Fieldtype {
     $exampleFieldset->label = $this->_('Usage instructions');
     $exampleFieldset->description = __('You need to define data and functionality for your field. Place the files in the folders like shown below.');
     $exampleFieldset->icon = 'code';
+    $exampleFieldset->notes = "See also [https://gitlab.com/baumrock/RockGrid/wikis/quickstart](https://gitlab.com/baumrock/RockGrid/wikis/quickstart)";
     $inputfields->add($exampleFieldset);
     
     $f = $this->wire('modules')->get('InputfieldMarkup');
