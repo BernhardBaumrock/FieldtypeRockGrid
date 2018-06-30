@@ -1,0 +1,8 @@
+.rockgridbuttons { float: right; padding-bottom: 3px; }
+.rockgridbuttons a { margin-right: 2px !important; }
+
+.clickfilteractive {
+  border: 2px solid black !important;
+}
+
+.rockgridbutton.showWhenSelected { display: none; }

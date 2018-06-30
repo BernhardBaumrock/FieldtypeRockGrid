@@ -1,0 +1,5 @@
+.ag-cell .RockGridActionItem { padding-left: 10px; }
+.ag-cell .RockGridActionItem:first-of-type { padding-left: 0px; }
+
+.ag-cell .RockGridActionItem .hover { display: none; }
+.ag-cell:hover .RockGridActionItem .hover { display: inline-block; }

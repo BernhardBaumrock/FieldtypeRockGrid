@@ -1,0 +1,29 @@
+.RockGridItem {
+  clear: both;
+  width: 100%;
+  height: 100%;
+  position: relative; /* needed for ajax reload overlay */
+}
+
+
+/* .RockGridWrapper:not(.autoheight) {
+  margin-bottom: 10px;
+} */
+
+/* ajax reload overlay */
+.reloadoverlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+/* fix selection issue: https://github.com/ag-grid/ag-grid/issues/87 */
+/* div.ag-root {
+  -webkit-user-select:text;
+  -moz-user-select:text;
+  -ms-user-select:text;
+  user-select:text;
+} */

@@ -1,0 +1,10 @@
+.RockGridWrapper.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  z-index: 999; /* pw-panels have z-index 1000 */
+  background-color: white;
+  overflow-y: scroll;
+}

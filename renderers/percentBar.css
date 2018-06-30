@@ -1,0 +1,19 @@
+
+.div-percent-bar {
+  display: inline-block;
+  height: 3px;
+  position: absolute;
+  left: 0;
+}
+
+.div-percent-value {
+  position: absolute;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.div-outer-div {
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+}
