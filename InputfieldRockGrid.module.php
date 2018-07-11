@@ -263,10 +263,10 @@ class InputfieldRockGrid extends Inputfield {
 
     // make sure the folders exist
     $dirs = [
-      $this->config->paths->siteModules . "RockGrid/plugins",
-      $this->config->paths->siteModules . "RockGrid/renderers",
-      $this->config->paths->siteModules . "RockGrid/formatters",
-      $this->config->paths->siteModules . "RockGrid/coldefs",
+      $this->config->paths->siteModules . "FieldtypeRockGrid/plugins",
+      $this->config->paths->siteModules . "FieldtypeRockGrid/renderers",
+      $this->config->paths->siteModules . "FieldtypeRockGrid/formatters",
+      $this->config->paths->siteModules . "FieldtypeRockGrid/coldefs",
       $this->config->paths->assets . "RockGrid/plugins",
       $this->config->paths->assets . "RockGrid/renderers",
       $this->config->paths->assets . "RockGrid/formatters",
@@ -287,7 +287,7 @@ class InputfieldRockGrid extends Inputfield {
     if(!$this->assetsLoaded) {
       // add aggrid
       $min = $this->config->debug ? '.min' : '';
-      $this->rg->assets->add($this->config->paths->siteModules . "RockGrid/lib/ag-grid$min.js");
+      $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/ag-grid$min.js");
 
       // add 
       foreach($dirs as $dir) {
@@ -304,11 +304,11 @@ class InputfieldRockGrid extends Inputfield {
       $this->rg->assets->add("{$this->config->paths->siteModules}RockGrid/lib/progressbar.min.js");
 
       // finally add RockGrid and RockGridItem classes when all plugins are loaded
-      $this->rg->assets->add($this->config->paths->siteModules . "RockGrid/RockGridPlugin.js");
-      $this->rg->assets->add($this->config->paths->siteModules . "RockGrid/RockGrid.js");
-      $this->rg->assets->add($this->config->paths->siteModules . "RockGrid/RockGridItem.js");
-      $this->rg->assets->add($this->config->paths->siteModules . "RockGrid/RockGridAjax.js");
-      $this->rg->assets->add($this->config->paths->siteModules . "RockGrid/RockGrid.css");
+      $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/RockGridPlugin.js");
+      $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/RockGrid.js");
+      $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/RockGridItem.js");
+      $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/RockGridAjax.js");
+      $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/RockGrid.css");
     }
     $this->assetsLoaded = true;
   }
