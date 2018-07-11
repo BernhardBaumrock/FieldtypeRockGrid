@@ -24,7 +24,7 @@ class InputfieldRockGrid extends Inputfield {
     return array(
       'title' => 'RockGrid',
       'author' => 'Bernhard Baumrock, baumrock.com',
-      'version' => 4,
+      'version' => 5,
       'summary' => 'Allows rendering of agGrids in the PW admin.',
       'requires' => 'FieldtypeRockGrid', 
       );
