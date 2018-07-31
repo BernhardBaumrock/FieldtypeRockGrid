@@ -60,8 +60,7 @@ class FieldtypeRockGrid extends Fieldtype {
       // skip non-existing files
       if(!is_file($asset)) continue;
 
-      // make sure the path is relative to the rootfolder
-      $asset = str_replace($this->config->paths->root, '/', $asset);
+      $asset = str_replace($this->config->paths->root,$this->config->urls->root, $asset);
       $file = pathinfo($asset);
       switch($file['extension']) {
         case 'js':
