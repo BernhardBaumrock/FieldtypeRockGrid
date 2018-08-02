@@ -24,7 +24,7 @@ class InputfieldRockGrid extends Inputfield {
     return array(
       'title' => 'RockGrid',
       'author' => 'Bernhard Baumrock, baumrock.com',
-      'version' => 5,
+      'version' => 6,
       'summary' => 'Allows rendering of agGrids in the PW admin.',
       'requires' => 'FieldtypeRockGrid', 
       );
@@ -318,7 +318,7 @@ class InputfieldRockGrid extends Inputfield {
    */
   private function setDataFromFile($fieldname) {
     $file = $this->config->paths->assets . "RockGrid/fields/$fieldname.php";
-    if(is_file($file)) $this->include($file);
+    if(is_file($file)) $this->includeFile($file);
   }
 
   /**
@@ -355,7 +355,7 @@ class InputfieldRockGrid extends Inputfield {
       if(!$this->field->name) {
         // when loading from a processmodule the field is not available
         $field = $this->sanitizer->text($this->input->get('field'));
-        $this->include($this->config->paths->assets . "RockGrid/fields/$field.php");
+        $this->includeFile($this->config->paths->assets . "RockGrid/fields/$field.php");
       }
       $this->loadAssets();
     }
@@ -419,7 +419,7 @@ class InputfieldRockGrid extends Inputfield {
   /**
    * include data file
    */
-  private function include($file) {
+  private function includeFile($file) {
     // get the current page
     // todo: check if that works on frontend
     // is it save to use?
