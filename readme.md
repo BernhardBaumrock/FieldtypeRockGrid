@@ -41,6 +41,7 @@ $(document).on('pw-panel-closed', function(event, $panel) {
 $form = $this->modules->get('InputfieldForm');
 
 $f = $this->modules->get('InputfieldRockGrid');
+$f->name = 'myRockGridField';
 $f->themeBorder = 'none';
 $f->setData(new RockFinder("id>0, limit=10", [
   'title',
@@ -52,6 +53,7 @@ $form->add($f);
 
 return $form->render();
 ```
+Then you can modify your grid via a javascript file: `/site/assets/RockGrid/fields/myRockGridField.js`
 
 ---
 
