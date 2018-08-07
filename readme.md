@@ -43,6 +43,8 @@ $form = $this->modules->get('InputfieldForm');
 $f = $this->modules->get('InputfieldRockGrid');
 $f->name = 'myRockGridField';
 $f->themeBorder = 'none';
+$f->height = 0;
+$f->pageSize = 1; // set initial pagination to 25 rows
 $f->setData(new RockFinder("id>0, limit=10", [
   'title',
   'templates_id',
