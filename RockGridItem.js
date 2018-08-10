@@ -113,6 +113,8 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
   RockGridItem.prototype.setColumns = function(columns) {
     var colDefs = RockGrid.gridItems[this.id].gridOptions.columnDefs;
 
+    console.log(colDefs);
+
     // first move all columns to the right place
     for(var i=0; i<columns.length; i++) {
       this.columnApi().moveColumn(columns[i], i);
@@ -124,6 +126,48 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
         this.columnApi().setColumnVisible(colDefs[i].field, false);
       }
     }
+  }
+
+  /**
+   * convert given column to child column and hide original column
+   * @param {string} column 
+   * @param {object} options 
+   */
+  RockGridItem.prototype.makeChild = function(column, options) {
+    var options = options || {};
+
+    // get coldef
+    var col = this.getColDef(column);
+    // create copy of object
+    var newcol = Object.assign({}, col);
+
+    // overwrite settings
+    for(var prop in options) newcol[prop] = options[prop];
+
+    // hide original column
+    col.hide = true;
+
+    return newcol;
+  }
+
+  /**
+   * move column based on field value
+   * @param {string} colum 
+   * @param {string} where 
+   */
+  RockGridItem.prototype.moveColumnAfter = function(from, to) {
+    var from = typeof from == 'string' ? this.getColDef(from) : from;
+    var to = this.getColDef(to);
+    var colDefs = this.gridOptions.columnDefs;
+
+    var fromindex;
+    var toindex;
+    for(var i = 0; i<colDefs.length; i++) {
+      if(colDefs[i].field == from.field) fromindex = i;
+      if(colDefs[i].field == to.field) toindex = i;
+    }
+
+    colDefs.splice(toindex+1, 0, colDefs.splice(fromindex, 1)[0]);
   }
 
   /**
@@ -191,7 +235,7 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
    * call the related coldef plugin and handover the current coldef
    */
   RockGridItem.prototype.addColDefPlugin = function(col, params) {
-    // def can either be a string or an object
+    // def can either be a 'string' ? or an objec : from;
     // if it is an object we take the colDef property as name of the colDef plugin
     // if it is a string, that's the name of the colDef plugin to call
     var defName = params.name || params;
@@ -342,3 +386,8 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
     }, 0);
     return sum/count;
   }
+
+  /**
+   * trigger GridItem ready event
+   */
+  document.dispatchEvent(new Event('RockGridItemReady'));
