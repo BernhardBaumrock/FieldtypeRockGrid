@@ -1,7 +1,7 @@
 document.addEventListener('RockGridReady', function(e) {
   // load currency.js
   currency = document.createElement('script');
-  currency.setAttribute('src','/site/modules/RockGrid/lib/currency.min.js');
+  currency.setAttribute('src','/site/modules/FieldtypeRockGrid/lib/currency.min.js');
   document.head.appendChild(currency);
 
   /**
