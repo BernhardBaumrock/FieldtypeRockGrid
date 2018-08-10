@@ -78,18 +78,6 @@ class InputfieldRockGrid extends Inputfield {
     // check if this request was an ajax request to get the field's data
     $this->handleAJAX();
 
-    // // check if we have data
-    // remove to make js-only tables possible
-    // if(!$this->initData) {
-    //   // check if we got an sql query
-    //   if(!$this->sql) {
-    //     // no sql datasource for this grid, so we check if we have a fieldname
-    //     if(strpos('Inputfield_', $this->id)!==0) throw new WireException("Please provide a fieldname and a data-file for your RockGrid field!");
-    //     $url = $this->pages->get(2)->url . 'setup/field/edit?id=' . $this->wire->fields->get(str_replace('Inputfield_', '', $this->id))->id . '#fieldtypeConfig';
-    //     return '<a href="' . $url . '">' . __('click here to setup your field') . '</a>';
-    //   }
-    // }
-
     // setup field height
     $height = '';
     if($this->height) $height = "style='height: {$this->height}px'";
@@ -150,7 +138,7 @@ class InputfieldRockGrid extends Inputfield {
     </script>
 
     <?php
-    if($this->initData AND count($lines = $this->initData->debuginfo)) {
+    if($this->initData AND is_object($this->initData) AND count($lines = $this->initData->debuginfo)) {
       $lines[] = [
         'name' => 'Overall Inputfield Render',
         'value' => Debug::timer($timer)*1000,
@@ -178,6 +166,17 @@ class InputfieldRockGrid extends Inputfield {
    */
   public function x($name, $str) {
     $this->translationStrings[$name] = $str;
+  }
+
+  /**
+   * get available options of given select options field
+   */
+  public function getOptionsFromField($fieldname) {
+    $options = [];
+    foreach($this->wire->fieldtypes->get('FieldtypeOptions')->getOptions($fieldname) as $item) {
+      $options[$item->id] = $item->title;
+    }
+    return $options;
   }
 
   /**
@@ -289,7 +288,8 @@ class InputfieldRockGrid extends Inputfield {
       $min = $this->config->debug ? '.min' : '';
       $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/ag-grid$min.js");
 
-      // add 
+      // add all js and css files
+      // bug: i think this will also add files not present on current page?
       foreach($dirs as $dir) {
         foreach($this->files->find($dir, ['extensions' => ['js', 'css']]) as $file) {
           $this->rg->assets->add($file);
@@ -299,6 +299,7 @@ class InputfieldRockGrid extends Inputfield {
       // add global scripts and styles by user
       $this->rg->assets->add("{$this->config->paths->assets}RockGrid/global.css");
       $this->rg->assets->add("{$this->config->paths->assets}RockGrid/global.js");
+      include("{$this->config->paths->assets}RockGrid/global.php");
 
       // load libraries
       $this->rg->assets->add("{$this->config->paths->siteModules}RockGrid/lib/progressbar.min.js");
@@ -368,10 +369,14 @@ class InputfieldRockGrid extends Inputfield {
 
     // catch sql errors
     try {
-      // check type of initial data
-      if($this->sql) {
-        $sql = $this->sql;
+      // check if data is set as SQL statement
+      $sql = $this->sql;
+      if(!$sql AND is_string($this->initData) AND substr($this->initData, 0, 6) === 'SELECT') {
+        $sql = $this->initData;
+      }
 
+      // check type of initial data
+      if($sql) {
         // if a limit was set, append it to the selector
         // this is the case when we do the query to get all data columns
         if($options['limit']) $sql .= ' LIMIT ' . $options['limit'];
