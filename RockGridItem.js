@@ -112,9 +112,6 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
    */
   RockGridItem.prototype.setColumns = function(columns) {
     var colDefs = RockGrid.gridItems[this.id].gridOptions.columnDefs;
-
-    console.log(colDefs);
-
     // first move all columns to the right place
     for(var i=0; i<columns.length; i++) {
       this.columnApi().moveColumn(columns[i], i);
