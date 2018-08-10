@@ -90,6 +90,47 @@ console.log(RockGrid.str.pl_name);
 console.log(RockGrid.str.title);
 ```
 
+## Transmit data to the client-side
+
+Select-Option fields by default show the ID of the field and not the label. In this case it might be the easiest
+solution to send an array to JavaScript with a reference list of which ID has which label:
+
+```php
+// site/assets/RockGrid/fields/yourfield.php
+$this->js([
+  'type' => [
+    1 => 'type1',
+    2 => 'type2',
+    3 => 'type3'
+  ]
+]);
+```
+
+Then the data is available in your griditem object:
+
+![js-data](images/js-data.png)
+
+You can then create a cellRenderer or a valueGetter to replace the field IDs by labels:
+
+```js
+col = grid.getColDef('rockprojecteffort_type');
+col.headerName = 'Typ';
+col.cellRenderer = function(params) {
+  // get the current cell value
+  var val = params.data.rockprojecteffort_type;
+  // return the corresponding label
+  return grid.js.type[val];
+};
+```
+
+Notice that you have a helper method to get all options of an options field:
+
+```php
+$this->js([
+  'type' => $this->getOptionsFromField('rockprojecteffort_type'),
+]);
+```
+
 ## Set visible columns
 ```js
 document.addEventListener('RockGridItemAfterInit', function(e) {
@@ -175,7 +216,7 @@ document.addEventListener('RockGridItemAfterInit', function(e) {
 });
 ```
 
-## AJAX callbacks
+## AJAX callbacks, Batcher Plugin
 
 In your php data-file:
 
@@ -233,6 +274,23 @@ $(document).on('click', 'button[name=send]', function() {
       }
     },
   });
+});
+```
+
+## Extending RockGrid and RockGridItem
+
+You can extend RockGrid easily by placing code like this into `/site/assets/RockGrid/fields/global.js`
+
+```js
+document.addEventListener('RockGridItemReady', function(e) {
+  /**
+   * be careful not to get in conflict with RockGridItem's original methods
+   * call it like this: grid.myCustomDemoMethod('hello world');
+   */
+  RockGridItem.prototype.myCustomDemoMethod = function(str) {
+    console.log(this); // current RockGridItem instance
+    console.log(str);
+  }
 });
 ```
 
