@@ -1,0 +1,4 @@
+.rgActionIcon-before {padding-right: 10px;}
+.rgActionIcon-after {padding-left: 10px;}
+
+.ag-cell:not(:hover) .rgActionIcon-hover {display: none;}
