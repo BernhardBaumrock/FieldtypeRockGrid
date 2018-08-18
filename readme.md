@@ -106,6 +106,16 @@ $this->js([
 ]);
 ```
 
+There is also a shortcut for options fields:
+
+```php
+// global.js
+$config->js('RockGrid', [
+  'efforttype' => $this->getOptionsFromField('efforttype'),
+  'projectstatus' => $this->getOptionsFromField('projectstatus'),
+]);
+```
+
 Then the data is available in your griditem object:
 
 ![js-data](images/js-data.png)

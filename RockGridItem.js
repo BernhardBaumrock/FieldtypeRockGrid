@@ -135,6 +135,7 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
 
     // get coldef
     var col = this.getColDef(column);
+    
     // create copy of object
     var newcol = Object.assign({}, col);
 

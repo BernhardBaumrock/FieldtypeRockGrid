@@ -9,9 +9,9 @@ var rgColCurrency = function(col, options) {
   // set currency renderer
   col.cellRenderer = RockGrid.renderers.currency;
   col.cellRendererParams = {
-    append: ' €',
-    prepend: '',
-    preset: 'euro',
+    append: typeof options.append == 'undefined' ? ' €' : options.append,
+    prepend: typeof options.prepend == 'undefined' ? '' : options.prepend,
+    preset: typeof options.preset == 'undefined' ? 'euro' : options.preset,
   }
 
   // return column object

@@ -12,7 +12,6 @@ document.addEventListener('RockGridReady', function(e) {
     colDef.filter = 'agNumberColumnFilter';
     colDef.cellRenderer = RockGrid.renderers.currency;
     colDef.cellRendererParams = {
-      format: params.format,
       append: ' €',
       prepend: '',
       preset: 'euro',
