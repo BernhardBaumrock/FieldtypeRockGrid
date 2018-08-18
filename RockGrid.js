@@ -165,6 +165,38 @@ function RockGrid() {
 /* ######################### helper functions ######################### */
 
   /**
+   * replace tags by value of current row
+   */
+  RockGrid.prototype.replaceTags = function(str, params) {
+    var result = str.match(/{(.*?)}/g);
+    if(!result) return str;
+
+    // replace tags
+    var notfound = false;
+    result.map(function(val) {
+      var field = val.replace(/{|}/g,'');
+      str = str.replace(val, params.data[field]);
+      if(params.data[field] == null) notfound = true;
+    });
+
+    // don't show icon if a tag's value was null
+    if(notfound) return false;
+    return str;
+  }
+  
+  /**
+   * wrap a span with hover info around the current string
+   */
+  RockGrid.prototype.hoverSpan = function(str, hovertext, icon) {
+    if(icon === false) icon = '';
+    else {
+      if(typeof icon === 'string') icon = '<i class="fa fa-' + icon + '"></i>';
+      else icon = '<i class="fa fa-comment-o"></i>';
+    }
+    return '<span title="' + hovertext + '">' + str + ' ' + icon + '</span>';
+  }
+
+  /**
    * round a number to given number of digits
    */
   RockGrid.prototype.toFixed = function(number, digits) {
