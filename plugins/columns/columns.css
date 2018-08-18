@@ -1,4 +1,20 @@
+/* icons plugin */
 .rgActionIcon-before {padding-right: 10px;}
 .rgActionIcon-after {padding-left: 10px;}
-
 .ag-cell:not(:hover) .rgActionIcon-hover {display: none;}
+
+/* bars plugin */
+.rgBar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 3px;
+  border: 0;
+}
+.rgBarPart {
+  /* use box shadow to not change the width and draw separator line on the right */
+  -webkit-box-shadow: 1px 0px 0px 0px white;
+  -moz-box-shadow: 1px 0px 0px 0px white;
+  box-shadow: 1px 0px 0px 0px white;
+}
