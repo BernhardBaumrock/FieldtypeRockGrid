@@ -64,10 +64,10 @@ class FieldtypeRockGrid extends Fieldtype {
       $file = pathinfo($asset);
       switch($file['extension']) {
         case 'js':
-          $out .= "\n\t<script src='$asset.?t=$timestamp'></script>";
+          $out .= "\n\t<script src='$asset?t=$timestamp'></script>";
           break;
         case 'css':
-          $out .= "\n\t<link rel='stylesheet' type='text/css' href='$asset.?t=$timestamp'>";
+          $out .= "\n\t<link rel='stylesheet' type='text/css' href='$asset?t=$timestamp'>";
           break;
       }
     }
