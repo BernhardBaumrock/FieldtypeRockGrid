@@ -34,6 +34,34 @@ function RockGrid() {
 
 /* ######################### helper methods ######################### */
 
+
+  /**
+   * get a new empty column object
+   */
+  RockGrid.prototype.getDefaultColumn = function(options) {
+    var def = {
+      headerName: RockGrid.hoverSpan(options.headerName),
+      field: options.field || null,
+      minWidth: 100,
+
+      // this keeps the filter when data is refreshed by ajax
+      filterParams: {newRowsAction: 'keep'},
+
+      // don't show filter icon on floating filters by default
+      // see https://www.ag-grid.com/javascript-grid-filtering/#floating-filters
+      floatingFilterComponentParams: {suppressFilterButton:true},
+    };
+
+    // add all settings
+    for(var prop in options) {
+      if(prop == 'headerName') continue;
+      if(prop == 'field') continue;
+      def[prop] = options[prop];
+    }
+
+    return def;
+  }
+
   /**
    * add a new grid to the object
    */
@@ -188,6 +216,11 @@ function RockGrid() {
    * wrap a span with hover info around the current string
    */
   RockGrid.prototype.hoverSpan = function(str, hovertext, icon) {
+    if(!hovertext) {
+      hovertext = str;
+      icon = false;
+    }
+
     if(icon === false) icon = '';
     else {
       if(typeof icon === 'string') icon = '<i class="fa fa-' + icon + '"></i>';

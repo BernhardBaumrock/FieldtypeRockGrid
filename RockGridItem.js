@@ -80,18 +80,10 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
   RockGridItem.prototype.getColumnDefsFromData = function() {
     var colDefs = [];
     for(i=0; i<this.dataColumns.length; i++) {
-      colDefs.push({
+      colDefs.push(RockGrid.getDefaultColumn({
         headerName: this.dataColumns[i],
         field: this.dataColumns[i],
-        minWidth: 100,
-
-        // this keeps the filter when data is refreshed by ajax
-        filterParams: {newRowsAction: 'keep'},
-
-        // don't show filter icon on floating filters by default
-        // see https://www.ag-grid.com/javascript-grid-filtering/#floating-filters
-        floatingFilterComponentParams: {suppressFilterButton:true},
-      });
+      }));
     }
     return colDefs;
   }
