@@ -1,9 +1,4 @@
 document.addEventListener('RockGridReady', function(e) {
-  // load currency.js
-  currency = document.createElement('script');
-  currency.setAttribute('src','/site/modules/FieldtypeRockGrid/lib/currency.min.js');
-  document.head.appendChild(currency);
-
   /**
    * here we define different presets for currencies
    * if you need any more please make a pull request

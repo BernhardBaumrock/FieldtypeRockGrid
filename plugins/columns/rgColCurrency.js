@@ -5,6 +5,7 @@
 var rgColCurrency = function(col, options) {
   // make sure it is a numeric column
   if(col.type != 'numericColumn') col = rgColNumber(col);
+  var options = options || {};
 
   // set currency renderer
   col.cellRenderer = RockGrid.renderers.currency;
