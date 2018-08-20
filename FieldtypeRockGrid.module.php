@@ -14,7 +14,7 @@ class FieldtypeRockGrid extends Fieldtype {
     return array(
       'title' => 'RockGrid',
       'author' => 'Bernhard Baumrock, baumrock.com',
-      'version' => "0.0.6",
+      'version' => "0.0.7",
       'summary' => 'RockGrid Main Module',
       'requires' => ['RockFinder'],
       'installs' => ['InputfieldRockGrid'],
@@ -59,15 +59,15 @@ class FieldtypeRockGrid extends Fieldtype {
     foreach($this->assets->unique() as $asset) {
       // skip non-existing files
       if(!is_file($asset)) continue;
-
+      $timestamp = filemtime($asset);
       $asset = str_replace($this->config->paths->root,$this->config->urls->root, $asset);
       $file = pathinfo($asset);
       switch($file['extension']) {
         case 'js':
-          $out .= "\n\t<script src='$asset'></script>";
+          $out .= "\n\t<script src='$asset.?t=$timestamp'></script>";
           break;
         case 'css':
-          $out .= "\n\t<link rel='stylesheet' type='text/css' href='$asset'>";
+          $out .= "\n\t<link rel='stylesheet' type='text/css' href='$asset.?t=$timestamp'>";
           break;
       }
     }
