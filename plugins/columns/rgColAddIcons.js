@@ -22,12 +22,16 @@ var rgColAddIcons = function(col, items) {
       // setup parameters
       var icon = item.icon || 'search';                                   // icon
       var type = item.type || 'after';                                    // show icon before or after the content
-      var href = RockGrid.replaceTags(item.href || '#', params);          // href of the link
+      var href = RockGrid.replaceTags(item.href || '', params);          // href of the link
       var show = item.show || 'always';                                   // show always or only on hover
       var dataHref = RockGrid.replaceTags(item.dataHref || '', params);   // data-href attribute for pw-panels
       var target = item.target || '_blank';                               // link target
       var label = item.label || icon;                                     // link label
       var cls = RockGrid.replaceTags(item.cls || '', params);             // link class
+
+      // if we have a data-href attribute we set the regular href attribute to that value
+      // this is needed to support middle-click (open in new tab) feature
+      if(!href) href = dataHref || '#';
 
       // early exit if a tag had no value
       if(href === false || dataHref === false) continue;
