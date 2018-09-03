@@ -2,6 +2,10 @@ document.addEventListener('RockGridItemLoadButtons', function(e) {
   var buttonsPlugin = e.detail;
   var grid = RockGrid.getGrid(e.target);
 
+  // only show button on ajax-grids
+  if(grid.data != 'ajax') return;
+
+  // register plugin
   RockGrid.getGrid(e.target).registerPlugin(function() {
     this.name = 'buttonRefresh';
   
