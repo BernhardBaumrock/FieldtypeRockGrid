@@ -9,6 +9,7 @@ col = rgColAddIcons(col, [{
   dataHref: '/admin/page/edit/?id={rockpayment_invoice}',
   show: 'hover',
   label: 'anzeigen',
+  type: 'before', // show icon before text (useful if you have lots of text in small columns)
 },{
   icon: 'file-pdf-o',
   cls: 'pw-panel',
