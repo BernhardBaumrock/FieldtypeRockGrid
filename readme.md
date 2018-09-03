@@ -202,34 +202,83 @@ document.addEventListener('RockGridItemAfterInit', function(e) {
 });
 ```
 
-## Manual initialisation
+## Manual initialisation / JavaScript-only Grids
 
-Sometimes you need to load a grid after other actions where performed. To make that possible add
-a function called onLoad_yourgrid needs to be defined in the js file. Example for a field called
-`responserates`:
+Sometimes you might need JavaScript-only grids. For example you could create a grid
+that shows aggregated data of another grid. The simplest example of such a grid is
+taken from [the ag-grid getting started guide](https://www.ag-grid.com/javascript-getting-started/).
 
 ```js
-// responserates.js
-var onLoad_responserates = function(js) {
-  // show init message
-  $('#RockGridItem_responserates').closest('.RockGridWrapper').find('.init').html(js.textBeforeInit);
+document.addEventListener('RockGridItemBeforeInit', function(e) {
+  if(e.target.id != 'RockGridItem_yourgridid') return;
+  var grid = RockGrid.getGrid(e.target.id);
+  var gridOptions = grid.gridOptions;
 
-  // if grid2 is already loaded init this field
-  var grid2 = RockGrid.getGrid('architecture');
-  if(grid2) {
-    initGrid_responserates();
-  }
-}
-// init grid when other grid had loaded it's data
-$(document).on('RockGridAjaxDone', function(event) {
-  if($(event.target).attr('id') != 'RockGridItem_architecture') return;
-  initGrid_responserates();
+  gridOptions.columnDefs = [
+    {headerName: "Make", field: "make"},
+    {headerName: "Model", field: "model"},
+    {headerName: "Price", field: "price"}
+  ];
+
+  gridOptions.rowData = [
+    {make: "Toyota", model: "Celica", price: 35000},
+    {make: "Ford", model: "Mondeo", price: 32000},
+    {make: "Porsche", model: "Boxter", price: 72000}
+  ];
 });
 ```
 
-```php
-// responserates.php
-$this->x('textBeforeInit', __('Please do this or that to show this grid!'));
+To update this grid whenever the master grid is changed use something like this:
+
+```js
+document.addEventListener('RockGridItemBeforeInit', function(e) {
+  if(e.target.id != 'RockGridItem_slave') return;
+  var grid = RockGrid.getGrid(e.target.id);
+  var gridOptions = grid.gridOptions;
+
+  gridOptions.columnDefs = [
+    {headerName: "Make", field: "make"},
+    {headerName: "Model", field: "model"},
+    {headerName: "Price", field: "price"}
+  ];
+
+  /**
+   * create custom redraw function for this grid
+   */
+  grid.redraw = function() {
+    var master = RockGrid.getGrid('master');
+
+    // get filtered id's of master grid
+    // see pluck() function in RockGridItem.js
+    var ids = master.pluck('id', {filter:true, sort:false});
+    console.log(ids);
+
+    // setup data array
+    var data = [];
+    for(var i = 0; i<ids.length; i++) {
+      data.push({
+        make: 'Row ' + i,
+        model: ids[i],
+        price: Math.random(),
+      });
+    }
+
+    // set new data
+    grid.api().setRowData(data);
+  }
+});
+
+/**
+ * attach event listeners to master table
+ */
+document.addEventListener('RockGridItemAfterInit', function(e) {
+  if(e.target.id != 'RockGridItem_master') return;
+  var grid = RockGrid.getGrid(e.target.id);
+
+  var redraw = function(e) { RockGrid.getGrid('slave').redraw(); }
+  grid.gridOptions.api.addEventListener('rowDataChanged', redraw);
+  grid.gridOptions.api.addEventListener('filterChanged', redraw);
+});
 ```
 
 ## Add dynamic columns

@@ -160,7 +160,13 @@ function RockGrid() {
         grid.getAjaxData();
       }
       else {
-        api.setRowData(grid.data);
+        // set data from the grid's data property
+        // if the data was set via the gridOptions take this data
+        if(grid.data && grid.gridOptions.rowData) {
+          console.error('Define either grid.data OR gridOptions.rowData, not both!');
+        }
+
+        api.setRowData(grid.gridOptions.rowData || grid.data);
       }
     });
 
