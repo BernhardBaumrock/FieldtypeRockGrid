@@ -1,5 +1,9 @@
 document.addEventListener('RockGridItemLoadButtons', function(e) {
   var buttonsPlugin = e.detail;
+  var grid = RockGrid.getGrid(e.target);
+
+  // only show button when filtering is enabled
+  if(grid.gridOptions.enableFilter === false) return;
 
   RockGrid.getGrid(e.target).registerPlugin(function() {
     this.name = 'buttonResetfilter';
