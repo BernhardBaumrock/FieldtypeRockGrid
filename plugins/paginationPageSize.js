@@ -8,8 +8,9 @@ document.addEventListener('RockGridItemLoadPlugins', function(e) {
     this.onLoad = function() {
       var grid = this.grid;
       
-      // if the grid has a manually set height we dont show the pagination selectbox
-      if(grid.js.settings.height > 0) return;
+      // dont show selectbox under some circumstances
+      if(grid.js.settings.height > 0) return; // manual height
+      if(grid.gridOptions.pagination === false) return; // pagination disabled
     
       // add the selectbox
       var wrapper = grid.getWrapperDOM();
