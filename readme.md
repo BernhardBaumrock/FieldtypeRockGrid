@@ -141,6 +141,46 @@ $this->js([
 ]);
 ```
 
+## Add payload to AJAX-Requests
+
+When having an AJAX powered grid it is sometimes necessary to pass variables to the server. For example
+you could have a process module showing a grid that should only list projects of one specific year.
+
+```js
+
+document.addEventListener('RockGridItemBeforeInit', function(e) {
+  if(e.target.id != 'RockGridItem_yourgridid') return;
+  var grid = RockGrid.getGrid(e.target.id);
+
+  // get payload for ajax requests
+  grid.getPayload = function() {
+    return {
+      year: grid.js.year,
+      randomDemo: function() {
+        return Math.random();
+      }
+    }
+  }
+});
+```
+
+The resulting request url could look something like that:
+
+```
+?field=auftragsbuch&RockGrid=1&year=2019&randomDemo=0.9468739776294344
+```
+
+This way you can pass any variables to the data-requesting AJAX call, for example a filter value, a selectbox
+value etc.
+
+In your php file you can access the variable like this:
+
+```php
+$year = wire()->input->get->year ?: date('Y');
+$selector = "template=project,year=$year";
+$finder = new RockFinder($selector, [...]);
+```
+
 ## Set visible columns
 ```js
 document.addEventListener('RockGridItemAfterInit', function(e) {

@@ -175,13 +175,20 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
   RockGridItem.prototype.getAjaxData = function() {
     var update = update || false;
     var grid = this;
+
+    // setup the url
     var url = location.href.split('#')[0];
     var href = url.split('?');
     href.push('field=' + grid.id);
     href.push('RockGrid=1');
-    // href.push('action=trash');
+
+    // get payload
+    href = this.addPayload(href);
+
+    // join string
     href = href.join('&').replace('&','?');
 
+    // do the XHR request
     var xhr = new XMLHttpRequest();
     xhr.open('GET', href, true); // async get request
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -193,6 +200,34 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
         grid.getDOM().dispatchEvent(new Event('RockGridAjaxDone', {bubbles:true}));
       }
     };
+  }
+
+  /**
+   * add payload to href string for ajax requests
+   */
+  RockGridItem.prototype.addPayload = function(href) {
+    var payload = this.getPayload();
+
+    // loop all properties of the payload object
+    for(var prop in payload) {
+      var val = payload[prop];
+
+      // add the value or the return value to the href array
+      if(typeof val == 'function') href.push(prop + "=" + val());
+      else href.push(prop + "=" + val);
+    }
+
+    // return the modified href array
+    return href;
+  }
+  
+  /**
+   * prototype function to get payload for ajax requests
+   * this function can be overwritten in the field's javascript setup file
+   * see docs for an example
+   */
+  RockGridItem.prototype.getPayload = function() {
+    return {};
   }
 
   /**
