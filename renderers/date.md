@@ -14,7 +14,8 @@ grid.addColDefPlugins({
 });
 ```
 
-You need to include `moment.js` to your assets:
+You need to include `moment.js` to your assets. In your field's php file do this:
 ```php
-$this->rg->assets->add($this->config->paths->siteModules . 'RockGrid/lib/moment.min.js');
+// eg site/assets/RockGrid/fields/yourfield.php
+$this->rg->assets->add($this->config->paths->siteModules . 'FieldtypeRockGrid/lib/moment.min.js');
 ```

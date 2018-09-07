@@ -9,7 +9,7 @@ document.addEventListener('RockGridItemLoadPlugins', function(e) {
       var grid = this.grid;
       
       var clicks = 0;
-      var timer, timeout = 350; // time between each click
+      var timer, timeout = 350; // max time between each click
 
       var doubleClick = function(e) {
         var colId = e.column.colId;

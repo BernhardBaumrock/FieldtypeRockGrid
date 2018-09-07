@@ -1,3 +1,7 @@
+# Attention: The concept of "colDefPlugins" is deprecated
+
+I switched to a function-based concept and will update the docs as soon as possible.
+
 # Column Definitions Plugins
 
 For some column types like dates or currencies you need to define multiple aspects. For numbers for example you need to make sure the value is a number (not a string) and you need to set the proper filter for that column. All those things can be placed in a coldef-plugin and then be reused across your grids or projects.
