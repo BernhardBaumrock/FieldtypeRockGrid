@@ -393,6 +393,22 @@ document.addEventListener('RockGridItemReady', function(e) {
 });
 ```
 
+## Create custom filters
+
+See a simple example filter with lots of comments here: `/site/modules/FieldtypeRockGrid/plugins/filters/example.js`
+
+Apply the filter like this:
+
+```js
+document.addEventListener('RockGridItemBeforeInit', function(e) {
+  if(e.target.id != 'RockGridItem_yourgrid') return;
+  var grid = RockGrid.getGrid(e.target.id);
+  col = grid.getColDef('title');
+  col.filter = RockGrid.filters.example;
+  col.floatingFilterComponent = RockGrid.filters.exampleFloating;
+});
+```
+
 ---
 ---
 ---

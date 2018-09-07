@@ -27,6 +27,9 @@ function RockGrid() {
     floatingFilter: true,
   }
 
+  // object holding all filters
+  this.filters = {}
+
   // are we in the backend?
   this.backend = false;
   if(typeof ProcessWire !== 'undefined') this.backend = true;
@@ -34,6 +37,26 @@ function RockGrid() {
 
 /* ######################### helper methods ######################### */
 
+  /**
+   * debounce function execution
+   * useful for handling filter inputs
+   * see https://davidwalsh.name/javascript-debounce-function
+   */
+  RockGrid.prototype.debounce = function(func, wait, immediate) {
+    var wait = wait || 500; // 500ms default
+    var timeout;
+    return function() {
+      var context = this, args = arguments;
+      var later = function() {
+        timeout = null;
+        if (!immediate) func.apply(context, args);
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) func.apply(context, args);
+    };
+  };
 
   /**
    * get a new empty column object
