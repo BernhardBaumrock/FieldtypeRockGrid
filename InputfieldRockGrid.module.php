@@ -285,7 +285,7 @@ class InputfieldRockGrid extends Inputfield {
     
     if(!$this->assetsLoaded) {
       // add aggrid
-      $min = $this->config->debug ? '.min' : '';
+      $min = $this->config->debug ? '' : '.min';
       $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/ag-grid$min.js");
 
       // add all js and css files
