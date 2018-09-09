@@ -73,6 +73,10 @@ function RockGrid() {
       // don't show filter icon on floating filters by default
       // see https://www.ag-grid.com/javascript-grid-filtering/#floating-filters
       floatingFilterComponentParams: {suppressFilterButton:true},
+      
+      // assign the custom smart filter by default
+      filter: RockGrid.filters.smart,
+      floatingFilterComponent: RockGrid.filters.smartFloating,
     };
 
     // add all settings

@@ -82,7 +82,8 @@ document.addEventListener('RockGridReady', function(e) {
   /**
    * check each cell if the filter passes
    */
-  filter.prototype.doesFilterPass = function (params) {var passed = true;
+  filter.prototype.doesFilterPass = function (params) {
+    var passed = true;
     var valueGetter = this.valueGetter;
     var value = valueGetter(params);
     if(!value) return false;
