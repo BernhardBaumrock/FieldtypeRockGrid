@@ -299,7 +299,9 @@ class InputfieldRockGrid extends Inputfield {
       // add global scripts and styles by user
       $this->rg->assets->add("{$this->config->paths->assets}RockGrid/global.css");
       $this->rg->assets->add("{$this->config->paths->assets}RockGrid/global.js");
-      include("{$this->config->paths->assets}RockGrid/global.php");
+      if(is_file($global = "{$this->config->paths->assets}RockGrid/global.php")) {
+        include($global);
+      }
 
       // load libraries
       $this->rg->assets->add("{$this->config->paths->siteModules}RockGrid/lib/progressbar.min.js");

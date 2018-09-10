@@ -6,7 +6,7 @@ col.headerName = 'Zugeordnete Honorarnote';
 col = rgColAddIcons(col, [{
   icon: 'search',
   cls: 'pw-panel',
-  dataHref: '/admin/page/edit/?id={rockpayment_invoice}',
+  dataHref: ProcessWire.config.urls.admin + 'page/edit/?id={rockpayment_invoice}',
   show: 'hover',
   label: 'anzeigen',
   type: 'before', // show icon before text (useful if you have lots of text in small columns)

@@ -3,6 +3,11 @@
 finish smart filter and set it as default column filter
 
 0.0.8
+0.0.9
+2018-09-10
+subdir bugfix
+
+0.0.8
 2018-09-07
 add example filter to show how you can implement custom filters + floating filters
 change to one version number for fieldtype + inputfield
