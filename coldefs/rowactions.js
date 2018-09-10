@@ -16,8 +16,7 @@ document.addEventListener('RockGridReady', function(e) {
 
       if(!options.noShow) items.push({
         icon: 'fa fa-search',
-        // todo: change path from absolute
-        href: '/admin/page/edit/?id=' + params.data[colDef.field],
+        href: ProcessWire.config.urls.admin + 'page/edit/?id=' + params.data[colDef.field],
         str: options.strShow || RockGrid.str.show,
         class: 'class="pw-panel"',
         target: 'target="_blank"',
