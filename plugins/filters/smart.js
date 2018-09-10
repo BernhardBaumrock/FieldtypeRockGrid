@@ -10,9 +10,11 @@ document.addEventListener('RockGridReady', function(e) {
   function filter() {}
   
   filter.prototype.init = function (params) {
+    RockGrid.filters.smartFilterOperands = '(<=|>=|<|>|=|!=)';
+
     this.valueGetter = params.valueGetter;
     this.filterText = null; // input field value
-    this.type = null; // smart, regex etc
+    this.type = 'smart'; // smart, regex etc
     this.params = params;
     this.setupGui();
   };
@@ -26,7 +28,7 @@ document.addEventListener('RockGridReady', function(e) {
     this.gui = document.createElement('div');
     this.gui.innerHTML =
       '<div style="padding: 4px;">' +
-        '<div><input style="margin: 4px 0px 4px 0px;" type="text" placeholder="search..."/></div>' +
+        '<div><input type="text" placeholder=""/></div>' +
         '<div style="padding: 7px 0; font-weight: bold;"><input type="radio" name="type" value="smart" checked="checked"> ' + lang.smartSmart + '</div>' +
         '<div><input type="radio" name="type" value="exact"> ' + lang.smartExact + '</div>' +
         '<div><input type="radio" name="type" value="number"> ' + lang.smartNumber + '</div>' +
@@ -51,7 +53,7 @@ document.addEventListener('RockGridReady', function(e) {
     // add event listener to the filtertext element
     this.eFilterInput.addEventListener("input", onFilterChanged);
 
-    // check
+    // check radios on label click events
     var that = this;
     this.gui.addEventListener("click", function(e) {
       var el = e.target;
@@ -69,30 +71,7 @@ document.addEventListener('RockGridReady', function(e) {
   };
 
   filter.prototype.doesFilterPass = function (params) {
-    var valueGetter = this.valueGetter;
-    var cellValue = valueGetter(params);
-
-    var passed;
-    var filterText = this.filterText;
-    switch(this.type) {
-      case 'exact':
-        passed = this.filterExact(cellValue, filterText);
-        break;
-
-      case 'number':
-        passed = this.filterNumber(cellValue, filterText);
-        break;
-        
-      case 'regex':
-        passed = this.filterRegex(cellValue, filterText);
-        break;
-      
-      default:
-        passed = this.executeFilterBlocks(filterText, params, this.filterSmart);
-        break;
-    }
-
-    return passed;
+    return this.executeFilterBlocks(params);
   };
 
   filter.prototype.isFilterActive = function () {
@@ -102,13 +81,39 @@ document.addEventListener('RockGridReady', function(e) {
   };
 
   filter.prototype.getModel = function () {
-    return this.isFilterActive() ? this.eFilterInput.value : null;
+    // setup the model object
+    var model = {
+      value: this.eFilterInput.value,
+      type: this.type,
+    };
+    return this.isFilterActive() ? model : null;
   };
 
+  /**
+   * actions that are done when the model is updated
+   */
   filter.prototype.setModel = function (model) {
-    this.eFilterInput.value = model;
+    // set the filter inputfield value
+    this.eFilterInput.value = model.value;
+
+    // set filterText property of current filter class
     this.filterText = this.eFilterInput.value;
+
+    // set filter type and radiobutton
+    this.type = model.type;
+    var radiobutton = this.gui.querySelector('input[value="' + model.type + '"]');
+    if(radiobutton) radiobutton.checked = true;
   };
+
+  /**
+   * update the model when the floating filter is changed
+   */
+  filter.prototype.onFloatingFilterChanged = function(value) {
+    var model = this.getModel() || {};
+    model.value = value;
+    this.setModel(model);
+    this.params.filterChangedCallback();
+  }
 
   /**
    * filter methods and helpers
@@ -123,23 +128,46 @@ document.addEventListener('RockGridReady', function(e) {
       if(filterText == '.') return cellValueString != ''; // non-empty
       if(filterText == '!') return cellValueString == ''; // empty
 
-      return cellValue.toString().toLowerCase().indexOf(filterText) >= 0;
+      return cellValueString.toLowerCase().indexOf(filterText) >= 0;
     }
     
     // Exact filter
     filter.prototype.filterExact = function(cellValue, filterText) {
-      return cellValue.toString().toLowerCase() == filterText.toString().toLowerCase();
+      var cellValueString = !cellValue ? '' : cellValue.toString();
+      return cellValueString.toLowerCase() == filterText.toString().toLowerCase();
     }
     
     // Number filter
     filter.prototype.filterNumber = function(cellValue, filterText) {
-      return passed;
+      var val = Number(cellValue);
+      if(!val) return false;
+
+      // parse number from string
+      // we create a regex based on the operands + spaces + any other digits that should be the number
+      var regex = new RegExp(RockGrid.filters.smartFilterOperands+'[\s]*(.*)', 'gm');
+      let m;
+      while ((m = regex.exec(filterText)) !== null) {
+          // This is necessary to avoid infinite loops with zero-width matches
+          if (m.index === regex.lastIndex) regex.lastIndex++;
+          
+          var operator = m[1];
+          var number = parseFloat(m[2]);
+      }
+
+      if(operator == '<') return val < number;
+      if(operator == '>') return val > number;
+      if(operator == '<=') return val <= number;
+      if(operator == '>=') return val >= number;
+      if(operator == '=') return val == number;
+      if(operator == '!=') return val != number;
+      
+      return false;
     }
     
     // Regex filter
     filter.prototype.filterRegex = function(cellValue, filterText) {
-      var passed = false;
-      return passed;
+      var cellValueString = !cellValue ? '' : cellValue.toString();
+      return cellValueString.match(new RegExp(filterText, 'gi'));
     }
 
     /**
@@ -156,19 +184,26 @@ document.addEventListener('RockGridReady', function(e) {
      * even better this could be made recursive, eg "<0 | ((>10 <20) | (>=50 <=60))"
      * should support "this|that" and "this | that" syntax
      */
-    filter.prototype.executeFilterBlocks = function(filterText, params, filterFunction) {
+    filter.prototype.executeFilterBlocks = function(params) {
       var passed;
+      var filterText = this.filterText;
       var valueGetter = this.valueGetter;
       var cellValue = valueGetter(params);
+      var filterFunction;
 
-      //console.log('executeFilterBlocks');
+      // dont split blocks on exact and regex filter
+      if(this.type === 'exact') return this.filterExact(cellValue, filterText);
+      if(this.type === 'regex') return this.filterRegex(cellValue, filterText);
 
       // execute or-groups
       if(filterText.indexOf("|") > 0) {
         passed = false;
         //console.log('---or---');
+        var that = this;
         filterText.split("|").forEach(function(filterWord) {
           //console.log('block, word = ' + filterWord);
+
+          filterFunction = that.getFilterFunction(filterWord);
           var blockPassed = filterFunction(cellValue, filterWord.trim());
           if(blockPassed) passed = true;
         });
@@ -178,8 +213,10 @@ document.addEventListener('RockGridReady', function(e) {
       else if(filterText.indexOf(" ") > 0) {
         passed = true;
         //console.log('---and---');
+        var that = this;
         filterText.split(" ").forEach(function(filterWord) {
           //console.log('block, word = ' + filterWord);
+          filterFunction = that.getFilterFunction(filterWord);
           var blockPassed = filterFunction(cellValue, filterWord.trim());
           if(!blockPassed) passed = false;
         });
@@ -188,14 +225,36 @@ document.addEventListener('RockGridReady', function(e) {
       // single string
       else {
         passed = false;
+        filterFunction = this.getFilterFunction(filterText);
         return filterFunction(cellValue, filterText);
       }
 
-      // filterText.toLowerCase().split(" ").forEach(function(filterWord) {
-      ////   console.log(filterWord);
-      // });
-
       return passed;
+    }
+
+    /**
+     * find the proper filter function for the given expression
+     * @param {string} filterExpression 
+     * 
+     * for example this returns the numberFilter if the expression has a leading < or > etc
+     */
+    filter.prototype.getFilterFunction = function(filterExpression) {
+      // if the filtertype is set manually return this type
+      switch(this.type) {
+        case 'exact': return this.filterExact;
+        case 'number': return this.filterNumber;
+        case 'regex': return this.filterRegex;
+      }
+
+      // remove leading spaces
+      filterExpression = filterExpression.trim();
+
+      // check for number filter
+      var regex = new RegExp('^' + RockGrid.filters.smartFilterOperands, 'gm');
+      if(filterExpression.match(regex)) return this.filterNumber;
+
+      // return the smart filter by default
+      return this.filterSmart;
     }
 
   // attach filter to rockgrid object
@@ -222,7 +281,7 @@ document.addEventListener('RockGridReady', function(e) {
 
     // setup the gui element
     this.gui = document.createElement('div');
-    this.gui.innerHTML = '<input placeholder="Filter..." type="text"/>'
+    this.gui.innerHTML = '<input placeholder="" type="text"/>'
     this.eFilterInput = this.gui.querySelector('input');
 
     // filter changed callback
@@ -247,10 +306,8 @@ document.addEventListener('RockGridReady', function(e) {
   }
 
   floatingFilter.prototype.onParentModelChanged = function (parentModel) {
-    var value = !parentModel
-      ? '' // if no parent filter we set an empty string
-      : parentModel + '' // if parent filter we make sure it is a string
-      ;
+    var value = '';
+    if(parentModel && parentModel.value) value = parentModel.value + '';
 
     // set the value of the input element
     this.eFilterInput.value = value;
