@@ -370,8 +370,9 @@ class InputfieldRockGrid extends Inputfield {
     // catch sql errors
     try {
       // check if data is set as SQL statement
+      // whenever is starts with "select" is is taken as sql statement
       $sql = $this->sql;
-      if(!$sql AND is_string($this->initData) AND substr($this->initData, 0, 6) === 'SELECT') {
+      if(!$sql AND is_string($this->initData) AND strtoupper(substr($this->initData, 0, 6)) === 'SELECT') {
         $sql = $this->initData;
       }
 
