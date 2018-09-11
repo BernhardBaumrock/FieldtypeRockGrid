@@ -12,7 +12,6 @@ var rgColNumber = function(col) {
   }
 
   col.type = 'numericColumn';
-  col.filter = 'agNumberColumnFilter';
   
   return col;
 }
