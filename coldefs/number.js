@@ -13,6 +13,5 @@ document.addEventListener('RockGridReady', function(e) {
     if(params.valueGetter) colDef.valueGetter = params.valueGetter;
 
     colDef.type = 'numericColumn';
-    colDef.filter = 'agNumberColumnFilter';
   };
 });

@@ -9,7 +9,6 @@ document.addEventListener('RockGridReady', function(e) {
       return val*1; // make sure the value is a number and not a string
     }
     colDef.type = 'numericColumn';
-    colDef.filter = 'agNumberColumnFilter';
     colDef.cellRenderer = RockGrid.renderers.currency;
     colDef.cellRendererParams = {
       append: ' €',
