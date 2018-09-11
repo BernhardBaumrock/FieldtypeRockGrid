@@ -2,8 +2,11 @@
  * smart filter
  * See https://i.imgur.com/ for a preview screenshot
  * 
- * todo: style border of floating filter differently for each filter type
- * if one uses the doubleclickfilter the filter is set to "exact" and that might not be recognized by the user
+ * todo:
+ * - style border of floating filter differently for each filter type
+ *   if one uses the doubleclickfilter the filter is set to "exact" and that might
+ *   not be recognized by the user
+ * - add support for = and != on text filters, eg !=foo !=bar, =foo | =bar
  */
 
 /**
@@ -11,14 +14,46 @@
  */
 document.addEventListener('RockGridReady', function(e) {
   function filter() {}
+  function floatingFilter() {}
+
+  /**
+   * shared functions
+   */
+  var setInputStyle = function(model, el) {
+    if(!model) return;
+
+    // reset border
+    el.style.border = null;
+
+    // make border orange on all non-default filtertypes
+    if(model.type != 'smart') {
+      el.style.border = '1px solid orange';
+    }
+
+    // check for valid regex
+    if(model.type == 'regex') {
+      try {
+        var regex = new RegExp(model.value, 'gi');
+      } catch(e) {
+        // invalid regex!
+        el.style.border = '1px solid red';
+      }
+    }
+  }
   
+  /**
+   * methods for the filter class
+   */
+
   filter.prototype.init = function (params) {
     RockGrid.filters.smartFilterOperands = '(<=|>=|<|>|=|!=)';
 
     this.name = 'smartFilter';
     this.valueGetter = params.valueGetter;
     this.filterText = null; // input field value
-    this.type = 'smart'; // default filter type: smart, regex etc
+    this.defaultType = 'smart'; // default filter type: smart, regex etc
+    this.type = this.defaultType;
+    this.regex = '';
     this.params = params;
     this.setupGui();
   };
@@ -32,11 +67,11 @@ document.addEventListener('RockGridReady', function(e) {
     this.gui = document.createElement('div');
     this.gui.innerHTML =
       '<div style="padding: 4px;">' +
-        '<div><input type="text" placeholder=""/></div>' +
-        '<div style="padding: 7px 0; font-weight: bold;"><input type="radio" name="type" value="smart"> ' + lang.smartSmart + '</div>' +
-        '<div><input type="radio" name="type" value="exact"> ' + lang.smartExact + '</div>' +
-        '<div><input type="radio" name="type" value="number"> ' + lang.smartNumber + '</div>' +
-        '<div><input type="radio" name="type" value="regex"> ' + lang.smartRegex + '</div>' +
+        '<div><input type="text" placeholder="" class="filterText" /></div>' +
+        '<div style="padding: 7px 0; font-weight: bold;"><input type="radio" name="type" class="filterType" value="smart"> ' + lang.smartSmart + '</div>' +
+        '<div><input type="radio" name="type" class="filterType" value="exact"> ' + lang.smartExact + '</div>' +
+        '<div><input type="radio" name="type" class="filterType" value="number"> ' + lang.smartNumber + '</div>' +
+        '<div><input type="radio" name="type" class="filterType" value="regex"> ' + lang.smartRegex + '</div>' +
       '</div>';
 
     // check the default radio
@@ -53,6 +88,10 @@ document.addEventListener('RockGridReady', function(e) {
     var that = this;
     onFilterChanged = RockGrid.debounce(function() {
       that.filterText = that.eFilterInput.value;
+      
+      // style the inputfield
+      setInputStyle(that.getModel(), that.eFilterInput);
+
       that.params.filterChangedCallback();
     });
 
@@ -65,10 +104,9 @@ document.addEventListener('RockGridReady', function(e) {
       var el = e.target;
 
       // what was clicked? the radio itself or the label?
-      var radio = el.nodeName == 'INPUT'
+      var radio = el.className == 'filterType'
         ? el
-        : el.querySelector("input[name=type]")
-        ;
+        : el.querySelector(".filterType");
       if(!radio) return;
 
       // a radio was checked
@@ -77,6 +115,7 @@ document.addEventListener('RockGridReady', function(e) {
         value: that.eFilterInput.value,
         type: radio.value,
       });
+
       that.params.filterChangedCallback();
     });
   };
@@ -104,16 +143,18 @@ document.addEventListener('RockGridReady', function(e) {
     // setup the model object
     var model = {
       value: this.eFilterInput.value,
-      type: this.type || 'smart',
+      type: this.type || this.defaultType,
     };
-    return this.isFilterActive() ? model : null;
+    return model;
   };
 
   /**
    * actions that are done when the model is updated
    */
   filter.prototype.setModel = function (model) {
-    if(!model || !Object.keys(model).length) model = {type:'smart',value:''}
+    if(!model) model = {}
+    model.type = model.type || this.defaultType;
+    model.value = model.value || '';
 
     // set the filter inputfield value
     this.eFilterInput.value = model.value;
@@ -124,6 +165,7 @@ document.addEventListener('RockGridReady', function(e) {
     // set filter type and radiobutton
     this.type = model.type;
     this.checkRadio();
+    setInputStyle(this.getModel(), this.eFilterInput);
   };
 
   /**
@@ -188,7 +230,15 @@ document.addEventListener('RockGridReady', function(e) {
     // Regex filter
     filter.prototype.filterRegex = function(cellValue, filterText) {
       var cellValueString = !cellValue ? '' : cellValue.toString();
-      return cellValueString.match(new RegExp(filterText, 'gi'));
+
+      try {
+        var regex = new RegExp(filterText, 'gi');
+      } catch(e) {
+        // invalid regex!
+        return false;
+      }
+
+      return cellValueString.match(regex);
     }
 
     /**
@@ -273,16 +323,10 @@ document.addEventListener('RockGridReady', function(e) {
       return this.filterSmart;
     }
 
-  // attach filter to rockgrid object
-  RockGrid.filters.smart = filter;
-});
+  /**
+   * methods for the floating filter class
+   */
 
-/**
- * smart floating filter
- */
-document.addEventListener('RockGridReady', function(e) {
-  function floatingFilter() {}
-  
   floatingFilter.prototype.init = function (params) {
     this.onFloatingFilterChanged = params.onFloatingFilterChanged;
     this.setupGui();
@@ -321,6 +365,8 @@ document.addEventListener('RockGridReady', function(e) {
   }
 
   floatingFilter.prototype.onParentModelChanged = function (parentModel) {
+    if(!parentModel) return;
+
     var value = '';
     if(parentModel && parentModel.value) value = parentModel.value + '';
 
@@ -329,8 +375,11 @@ document.addEventListener('RockGridReady', function(e) {
     
     // set the current floatingFilter value to the parent's value
     this.currentValue = parentModel;
+
+    setInputStyle(parentModel, this.eFilterInput);
   };
 
   // attach filter to rockgrid object
+  RockGrid.filters.smart = filter;
   RockGrid.filters.smartFloating = floatingFilter;
 });
