@@ -14,10 +14,23 @@ document.addEventListener('RockGridItemLoadPlugins', function(e) {
       var doubleClick = function(e) {
         var colId = e.column.colId;
         var filter = grid.api().getFilterInstance(colId);
-        filter.setModel({
-          type: 'equals',
-          filter: e.value,
-        });
+        
+        // only apply this filter to smartFilter instances
+        if(filter.name == 'smartFilter') {
+          filter.setModel({
+            type: 'exact',
+            value: e.value,
+          });
+        }
+        else {
+          // regular aggrid filter, either num or text filter
+          filter.setModel({
+            type: 'equals',
+            filter: e.value,
+          });
+        }
+
+        // update grid
         grid.api().onFilterChanged();
         grid.api().deselectAll();
       }
@@ -26,6 +39,7 @@ document.addEventListener('RockGridItemLoadPlugins', function(e) {
         var colId = e.column.colId;
         var filter = grid.api().getFilterInstance(colId);
         filter.setModel({});
+
         grid.api().onFilterChanged();
         grid.api().deselectAll();
       }

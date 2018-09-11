@@ -1,8 +1,7 @@
-0.0.9
-2018-09-10
+0.0.10
+2018-09-11
 finish smart filter and set it as default column filter
 
-0.0.8
 0.0.9
 2018-09-10
 subdir bugfix
