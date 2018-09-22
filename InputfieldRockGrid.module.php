@@ -288,6 +288,9 @@ class InputfieldRockGrid extends Inputfield {
       $min = $this->config->debug ? '' : '.min';
       $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/ag-grid$min.js");
 
+      // add progressbar library for batcher
+      $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/progressbar.min.js");
+
       // add all js and css files
       // bug: i think this will also add files not present on current page?
       foreach($dirs as $dir) {
