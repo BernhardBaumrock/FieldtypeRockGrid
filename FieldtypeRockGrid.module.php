@@ -98,8 +98,8 @@ class FieldtypeRockGrid extends Fieldtype {
       // for filter panel
       'page' => __('Page'),
       'more' => __('More'),
-      'to' => __('To'),
-      'of' => __('Of'),
+      'to' => __('to'),
+      'of' => __('of'),
       'next' => __('Next'),
       'last' => __('Last'),
       'first' => __('First'),
