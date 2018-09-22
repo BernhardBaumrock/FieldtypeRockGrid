@@ -1,3 +1,7 @@
+0.0.11
+2018-09-22
+add translations of aggrid's internal labels via pw backend
+
 0.0.10
 2018-09-11
 finish smart filter and set it as default column filter

@@ -18,7 +18,7 @@ document.addEventListener('RockGridItemLoadPlugins', function(e) {
       wrapper.insertBefore(el, wrapper.firstChild);
     
       // html element
-      var out = '<div class="paginationPageSize">Rows: <select onchange="RockGridChangePaginationSize(this)" class="uk-form-small">';
+      var out = '<div class="paginationPageSize">' + RockGrid.str.rows + ': <select onchange="RockGridChangePaginationSize(this)" class="uk-form-small">';
       for(var i=0; i<grid.js.settings.pageSizes.length; i++) {
         var selected = (grid.js.settings.initPageSize == grid.js.settings.pageSizes[i])
           ? ' selected'
