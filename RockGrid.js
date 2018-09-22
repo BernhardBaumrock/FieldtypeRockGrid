@@ -212,6 +212,9 @@ function RockGrid() {
       opt.paginationPageSize = js.settings.initPageSize;
     }
 
+    // set language translation object
+    opt.localeText = RockGrid.localeText;
+
     // create grid and fire events
     el.dispatchEvent(new Event('RockGridItemBeforeInit', {bubbles:true}));
     new agGrid.Grid(el, this.gridItems[grid].gridOptions);

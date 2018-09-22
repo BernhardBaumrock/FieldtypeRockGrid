@@ -1,5 +1,5 @@
 <?php namespace ProcessWire;
-
+// general translations
 $this->rg->x('show', __('show'));
 $this->rg->x('trash', __('trash'));
 $this->rg->x('choose', __('choose'));
