@@ -1,3 +1,7 @@
+0.0.12
+2018-09-24
+update aggrid to v19.0.0
+
 0.0.11
 2018-09-22
 add translations of aggrid's internal labels via pw backend
