@@ -1,29 +1,29 @@
 document.addEventListener('RockGridReady', function(e) {
-  RockGrid.colDefs.rowactions = function(colDef, options) {
+  RockGrid.colDefs.rowActions = function(col, options) {
     var options = options || {};
 
-    colDef.width = options.width || 80;
-    colDef.suppressSizeToFit = true;
-    colDef.suppressMenu = true;
-    colDef.headerName = '';
-    colDef.suppressFilter = true;
-    colDef.cellStyle = {'text-align': 'center'};
+    col.width = options.width || 80;
+    col.suppressSizeToFit = true;
+    col.suppressMenu = true;
+    col.headerName = '';
+    col.suppressFilter = true;
+    col.cellStyle = {'text-align': 'center'};
 
-    colDef.cellRenderer = function(params) {
+    col.cellRenderer = function(params) {
       if(!params.data || !params.data.id) return;
 
       var items = [];
 
       if(!options.noShow) items.push({
         icon: 'fa fa-search',
-        href: ProcessWire.config.urls.admin + 'page/edit/?id=' + params.data[colDef.field],
+        href: ProcessWire.config.urls.admin + 'page/edit/?id=' + params.data[col.field],
         str: options.strShow || RockGrid.str.show,
         class: 'class="pw-panel"',
         target: 'target="_blank"',
       });
       if(!options.noEdit) items.push({
         icon: 'fa fa-edit',
-        href: ProcessWire.config.urls.admin + 'page/edit/?id=' + params.data[colDef.field],
+        href: ProcessWire.config.urls.admin + 'page/edit/?id=' + params.data[col.field],
         str: options.strEdit || RockGrid.str.edit,
       });
       if(!options.noTrash) items.push({
@@ -36,7 +36,7 @@ document.addEventListener('RockGridReady', function(e) {
       return RockGrid.renderers.actionItems(params, items);
     };
 
-    return colDef;
+    return col;
   };
 });
 
