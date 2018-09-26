@@ -2,7 +2,7 @@ document.addEventListener('RockGridReady', function(e) {
   RockGrid.colDefs.rowactions = function(colDef, options) {
     var options = options || {};
 
-    colDef.width = options.width || 60;
+    colDef.width = options.width || 80;
     colDef.suppressSizeToFit = true;
     colDef.suppressMenu = true;
     colDef.headerName = '';
@@ -20,6 +20,11 @@ document.addEventListener('RockGridReady', function(e) {
         str: options.strShow || RockGrid.str.show,
         class: 'class="pw-panel"',
         target: 'target="_blank"',
+      });
+      if(!options.noEdit) items.push({
+        icon: 'fa fa-edit',
+        href: ProcessWire.config.urls.admin + 'page/edit/?id=' + params.data[colDef.field],
+        str: options.strEdit || RockGrid.str.edit,
       });
       if(!options.noTrash) items.push({
         icon: 'fa fa-trash',
