@@ -16,7 +16,7 @@ function RockGrid() {
   this.formatters = {};
 
   // object holding colDefs
-  this.coldefs = {};
+  this.colDefs = {};
 
   // manually defined global options
   // these options are set for all grids

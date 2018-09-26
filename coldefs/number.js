@@ -1,5 +1,5 @@
 document.addEventListener('RockGridReady', function(e) {
-  RockGrid.coldefs.number = function(colDef, params) {
+  RockGrid.colDefs.number = function(colDef, params) {
     var params = params || {};
 
     // set coldefs
@@ -13,5 +13,7 @@ document.addEventListener('RockGridReady', function(e) {
     if(params.valueGetter) colDef.valueGetter = params.valueGetter;
 
     colDef.type = 'numericColumn';
+
+    return colDef;
   };
 });

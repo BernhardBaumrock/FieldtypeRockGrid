@@ -1,5 +1,5 @@
 document.addEventListener('RockGridReady', function(e) {
-  RockGrid.coldefs.rowactions = function(colDef, options) {
+  RockGrid.colDefs.rowactions = function(colDef, options) {
     var options = options || {};
 
     colDef.width = options.width || 60;
@@ -30,6 +30,8 @@ document.addEventListener('RockGridReady', function(e) {
 
       return RockGrid.renderers.actionItems(params, items);
     };
+
+    return colDef;
   };
 });
 
