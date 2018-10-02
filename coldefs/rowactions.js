@@ -1,6 +1,7 @@
 document.addEventListener('RockGridReady', function(e) {
   RockGrid.colDefs.rowActions = function(col, options) {
     var options = options || {};
+    if(!col) return;
 
     col.width = options.width || 80;
     col.suppressSizeToFit = true;

@@ -62,8 +62,9 @@ function RockGrid() {
    * get a new empty column object
    */
   RockGrid.prototype.getDefaultColumn = function(options) {
+    options = options || {};
     var def = {
-      headerName: RockGrid.hoverSpan(options.headerName),
+      headerName: options.headerName ? RockGrid.hoverSpan(options.headerName) : '',
       field: options.field || null,
       minWidth: 100,
 

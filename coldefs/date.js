@@ -1,5 +1,6 @@
 document.addEventListener('RockGridReady', function(e) {
   RockGrid.colDefs.date = function(col) {
+    if(!col) return;
 
     // set coldefs
     col.valueGetter = function(params) {
