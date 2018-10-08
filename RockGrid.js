@@ -16,7 +16,7 @@ function RockGrid() {
   this.formatters = {};
 
   // object holding colDefs
-  this.coldefs = {};
+  this.colDefs = {};
 
   // manually defined global options
   // these options are set for all grids
@@ -62,8 +62,9 @@ function RockGrid() {
    * get a new empty column object
    */
   RockGrid.prototype.getDefaultColumn = function(options) {
+    options = options || {};
     var def = {
-      headerName: RockGrid.hoverSpan(options.headerName),
+      headerName: options.headerName ? RockGrid.hoverSpan(options.headerName) : '',
       field: options.field || null,
       minWidth: 100,
 

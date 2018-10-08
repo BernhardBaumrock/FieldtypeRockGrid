@@ -1,10 +1,17 @@
 document.addEventListener('RockGridReady', function(e) {
-  RockGrid.coldefs.date = function(colDef, params) {
-    var params = params || {};
-    colDef.cellRenderer = RockGrid.renderers.date;
-    colDef.cellRendererParams = {
-      format: params.format
+  RockGrid.colDefs.date = function(col) {
+    if(!col) return;
+
+    // set coldefs
+    col.valueGetter = function(params) {
+      if(typeof params.data == 'undefined') return;
+      var val = params.data[col.field];
+      var date = moment(val);
+
+      if(!date.isValid()) return '';
+      return date.format('YYYY-MM-DD');
     }
-    colDef.filter = 'agDateColumnFilter';
-  };
+  
+    return RockGrid.colDefs.fixedWidth(col, 100);
+  }
 });

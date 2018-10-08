@@ -1,36 +1,24 @@
-# Attention: The concept of "colDefPlugins" is deprecated
+# Library of useful column-definitions
 
-I switched to a function-based concept and will update the docs as soon as possible.
-
-# Column Definitions Plugins
-
-For some column types like dates or currencies you need to define multiple aspects. For numbers for example you need to make sure the value is a number (not a string) and you need to set the proper filter for that column. All those things can be placed in a coldef-plugin and then be reused across your grids or projects.
-
-## Usage
-
-coldef-plugins are placed in the `/site/[assets|modules]/RockGrid/coldefs` folder. To add a new coldef-type see the existing files like `date.js` or `number.js`.
-
-To use those plugins add them like so:
+ColDefs can be used to change columns to repeating needs. For example you can
+use a coldef plugin to make the ID column not show the plain id as number but
+to show clickable icons:
 
 ```js
-document.addEventListener('RockGridItemBeforeInit', function(e) {
-  if(e.target.id != 'RockGridItem_yourgridid') return;
-  var grid = RockGrid.getGrid(e.target.id);
-  
-  grid.addColDefPlugins({
-    answercount: 'number',
-  });
+col = grid.getColDef('id');
+col = RockGrid.colDefs.rowactions(col);
+```
+
+![rowactions](https://i.imgur.com/Ml0ipqq.png)
+
+Some colDefs can also be defined with an extra options object:
+
+```js
+col = grid.getColDef('id');
+col = RockGrid.colDefs.rowactions(col, {
+  strShow: 'Open this page in a PW-Panel',
+  noTrash: true,
 });
 ```
 
-This will use the `number` coldef-plugin for the column `answercount` making it text-align: right and using the number-filter. If the colStats plugin is enabled this will also make it show the sum() of the column.
-
-## Advanced
-
-```js
-answers: {name: 'number', valueGetter: function(params) {
-  var val = params.data[answercol.field];
-  if(!val) return 0;
-  return val.split(',').length;
-}},
-```
+![custom-options](https://i.imgur.com/xMjK1nG.png)

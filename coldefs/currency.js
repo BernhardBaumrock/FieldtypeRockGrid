@@ -1,5 +1,5 @@
 document.addEventListener('RockGridReady', function(e) {
-  RockGrid.coldefs.currency = function(colDef, params) {
+  RockGrid.colDefs.currency = function(colDef, params) {
     var params = params || {};
 
     // set coldefs
@@ -15,5 +15,7 @@ document.addEventListener('RockGridReady', function(e) {
       prepend: '',
       preset: 'euro',
     }
+
+    return colDef;
   };
 });

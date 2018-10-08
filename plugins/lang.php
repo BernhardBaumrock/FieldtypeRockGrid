@@ -2,6 +2,7 @@
 // general translations
 $this->rg->x('show', __('show'));
 $this->rg->x('trash', __('trash'));
+$this->rg->x('edit', __('edit'));
 $this->rg->x('choose', __('choose'));
 $this->rg->x('rows', __('Rows'));
 $this->rg->x('refreshTimer', __('Refresh every ... seconds'));
