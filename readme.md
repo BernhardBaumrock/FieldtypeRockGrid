@@ -109,8 +109,8 @@ $this->js([
 There is also a shortcut for options fields:
 
 ```php
-// global.js
-$config->js('RockGrid', [
+// site/assets/RockGrid/fields/yourfield.php
+$this->js('RockGrid', [
   'efforttype' => $this->getOptionsFromField('efforttype'),
   'projectstatus' => $this->getOptionsFromField('projectstatus'),
 ]);
