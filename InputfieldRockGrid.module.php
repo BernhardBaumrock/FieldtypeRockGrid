@@ -31,7 +31,6 @@ class InputfieldRockGrid extends Inputfield {
   }
 
   public function init() {
-
     $this->rg = $this->modules->get('FieldtypeRockGrid');
     
     // assign the current field to its reference
@@ -250,6 +249,9 @@ class InputfieldRockGrid extends Inputfield {
    * if the field's name is rg1 you can place a file /site/assets/RockGrid/fields/rg1.css|.js
    * you can use the "frontend" or "backend" class that is applied to the RockGridWrapper
    * in your css selectors to style grids differently
+   * 
+   * todo: rewrite loading of assets completely
+   * this method is a mess...
    */
   private function loadAssets() {
     // on ajax requests the field will be assigned later in the handleAJAX() method
@@ -271,10 +273,10 @@ class InputfieldRockGrid extends Inputfield {
       $this->config->paths->assets . "RockGrid/formatters",
       $this->config->paths->assets . "RockGrid/coldefs",
     ];
-    foreach($dirs as $dir) if(!is_dir($dir)) $this->files->mkdir($dir, true);
+    foreach($dirs as $dir) if(!is_dir($dir)) $this->wire->files->mkdir($dir, true);
 
     // todo: does this load all fields even when only one field is displayed??
-    foreach($this->files->find($this->config->paths->assets.'RockGrid/fields/', ['extensions' => ['php', 'js', 'css']]) as $file) {
+    foreach($this->wire->files->find($this->config->paths->assets.'RockGrid/fields/', ['extensions' => ['php', 'js', 'css']]) as $file) {
       $this->rg->assets->add($file);
     }
 
@@ -325,7 +327,22 @@ class InputfieldRockGrid extends Inputfield {
    * set data from included file
    */
   private function setDataFromFile($fieldname) {
-    $file = $this->config->paths->assets . "RockGrid/fields/$fieldname.php";
+    // if the field has a custom assets folder present we load the file from there
+    if($this->assetsDir) {
+      // a custom assets dir was set
+      // we save that dir to the php session so that ajax requests know
+      // where to get the data from and the client cannot modify this path
+      // $this->wire->session->set('assetsDir', $this->assetsDir);
+      $file = rtrim($this->assetsDir, '/') . "/$fieldname.php";
+
+      // save this path to the php session for following ajax requests
+      // on ajax we only know the field name and the related assetsDir
+      // must be provided on the server side to prevent client-side manipulations
+      $this->wire->session->set('RockGridAssetsDir_'.$fieldname, $file);
+    }
+    else {
+      $file = $this->config->paths->assets . "RockGrid/fields/$fieldname.php";
+    }
     if(is_file($file)) $this->includeFile($file);
   }
 
@@ -362,8 +379,19 @@ class InputfieldRockGrid extends Inputfield {
     if($this->initData === []) {
       if(!$this->field->name) {
         // when loading from a processmodule the field is not available
-        $field = $this->sanitizer->text($this->input->get('field'));
-        $this->includeFile($this->config->paths->assets . "RockGrid/fields/$field.php");
+        $fieldname = $this->sanitizer->text($this->input->get('field'));
+
+        // set the field name according to the ajax request
+        // we need the field name to retrieve several data on ajax requests
+        $this->field->name = $fieldname;
+
+        // include the data file
+        // if a custom path is set in the session get this file
+        // otherwise get the default file in the assets folder
+        $file = '';
+        $file = $this->wire->session->get("RockGridAssetsDir_$fieldname");
+        if(!$file) $file = $this->config->paths->assets . "RockGrid/fields/$fieldname.php";
+        $this->includeFile($file);
       }
       $this->loadAssets();
     }
