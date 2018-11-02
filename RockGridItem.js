@@ -161,15 +161,6 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
   }
 
   /**
-   * add column definitions by coldef plugins
-   */
-  RockGridItem.prototype.addColDefPlugins = function(params) {
-    for(var col in params) {
-      this.addColDefPlugin(col, params[col]);
-    }
-  }
-
-  /**
    * get ajax data
    */
   RockGridItem.prototype.getAjaxData = function() {
@@ -255,22 +246,6 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
     if(!overlay) return;
     overlay.outerHTML = '';
   });
-
-  /**
-   * call the related coldef plugin and handover the current coldef
-   */
-  RockGridItem.prototype.addColDefPlugin = function(col, params) {
-    console.warn('DEPRECATED!!! This method will be removed soon, update your code to remove this breaking change!');
-
-    // def can either be a 'string' ? or an objec : from;
-    // if it is an object we take the colDef property as name of the colDef plugin
-    // if it is a string, that's the name of the colDef plugin to call
-    var defName = params.name || params;
-    var colDef = this.getColDef(col);
-    var coldefFunction = RockGrid.colDefs[defName];
-    if(typeof coldefFunction === 'function') coldefFunction(colDef, params);
-    else console.warn('No coldef-plugin found for ' + defName);
-  }
 
   /**
    * function to handle ajax calls for this grid

@@ -14,7 +14,7 @@ class FieldtypeRockGrid extends Fieldtype {
     return array(
       'title' => 'RockGrid',
       'author' => 'Bernhard Baumrock, baumrock.com',
-      'version' => '0.0.13',
+      'version' => '0.0.14',
       'summary' => 'RockGrid Main Module',
       'requires' => ['RockFinder'],
       'installs' => ['InputfieldRockGrid'],

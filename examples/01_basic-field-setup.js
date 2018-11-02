@@ -14,11 +14,6 @@ document.addEventListener('RockGridItemBeforeInit', function(e) {
   col.headerName = grid.js.deadline;
   col.width = 150;
   col.suppressSizeToFit = true;
-
-  // add coldef plugins (shortcuts for dates, numbers, etc)
-  grid.addColDefPlugins({
-    deadline: {name: 'date', format: 'DD.MM.YYYY HH:mm:ss'},
-  });
 });
 
 document.addEventListener('RockGridItemAfterInit', function(e) {
