@@ -24,7 +24,7 @@ class InputfieldRockGrid extends Inputfield {
     return array(
       'title' => 'RockGrid',
       'author' => 'Bernhard Baumrock, baumrock.com',
-      'version' => '0.0.14',
+      'version' => '0.0.15',
       'summary' => 'Allows rendering of agGrids in the PW admin.',
       'requires' => 'FieldtypeRockGrid', 
       );
@@ -335,6 +335,7 @@ class InputfieldRockGrid extends Inputfield {
    * set data from included file
    */
   private function setDataFromFile($fieldname) {
+    $this->prepareAssetsDir();
     // if the field has a custom assets folder present we load the file from there
     if($this->assetsDir) {
       // a custom assets dir was set
@@ -352,6 +353,31 @@ class InputfieldRockGrid extends Inputfield {
       $file = $this->config->paths->assets . "RockGrid/fields/$fieldname.php";
     }
     if(is_file($file)) $this->includeFile($file);
+  }
+
+  /**
+   * prepare assets dir to make sure it has no trailing slash
+   */
+  private function prepareAssetsDir() {
+    if(!$this->assetsDir) return;
+
+    // if it is already correct return
+    if(is_dir($this->assetsDir)) return;
+
+    // if it is not a directory try to prepend the sites root path
+    if(!is_dir($this->assetsDir)) {
+      $dir =
+        $this->wire->config->paths->root.
+        trim($this->assetsDir, "/");
+      if(is_dir($dir)) {
+        $this->assetsDir = $dir;
+        return;
+      }
+    }
+
+    // wrong assets dir, reset it
+    $this->wire->warning($this->assetsDir . " not found");
+    $this->assetsDir = null;
   }
 
   /**

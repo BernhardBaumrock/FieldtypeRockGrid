@@ -14,7 +14,7 @@ class FieldtypeRockGrid extends Fieldtype {
     return array(
       'title' => 'RockGrid',
       'author' => 'Bernhard Baumrock, baumrock.com',
-      'version' => '0.0.15',
+      'version' => '0.0.16',
       'summary' => 'RockGrid Main Module',
       'requires' => ['RockFinder'],
       'installs' => ['InputfieldRockGrid'],
@@ -194,6 +194,7 @@ class FieldtypeRockGrid extends Fieldtype {
     $inputField->set('nocompression', $field->nocompression);
     $inputField->set('pageSize', $field->pageSize);
     $inputField->set('height', $field->height);
+    $inputField->set('assetsDir', $field->assetsDir);
     return $inputField;
   }
 
@@ -253,7 +254,7 @@ class FieldtypeRockGrid extends Fieldtype {
       $f->label = $this->_("Field height in px");
       $f->notes = __("15 rows = 520") . "\n";
       $f->notes .= __("Use 0 for auto-height grid");
-      $f->columnWidth = 50;
+      $f->columnWidth = 33;
       $inputfields->add($f);
 
     // initial pagination pagesize
@@ -262,8 +263,17 @@ class FieldtypeRockGrid extends Fieldtype {
       $f->value = $field->pageSize ?: 0;
       $f->label = $this->_("Initial Pagination PageSize");
       $f->addOptions($this->pageSizes);
-      $f->columnWidth = 50;
+      $f->columnWidth = 33;
       $f->showIf = 'height=0';
+      $inputfields->add($f);
+      
+    // custom assets dir
+      $f = $this->modules->get('InputfieldText');
+      $f->attr('name', 'assetsDir');
+      $f->label = $this->_("Custom Assets Directory");
+      $f->notes = "Relative to root, eg /site/modules/MyModule/grids";
+      $f->value = $field->assetsDir;
+      $f->columnWidth = 34;
       $inputfields->add($f);
 
     /** @var InputfieldMarkup $f */
