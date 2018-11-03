@@ -281,9 +281,17 @@ class InputfieldRockGrid extends Inputfield {
     }
 
     // add all files from folder /site/assets/RockGrid/fields/ related to this field
-    $this->rg->assets->add("{$this->config->paths->assets}RockGrid/fields/{$this->field->name}.css");
-    $this->rg->assets->add("{$this->config->paths->assets}RockGrid/fields/{$this->field->name}.js");
+    // first we set the data, this will also set the assetsdir session variable
     $this->setDataFromFile($this->field->name);
+    if($this->field->assetsDir) {
+      $dir = rtrim($this->field->assetsDir, "/");
+      $this->rg->assets->add("$dir/{$this->field->name}.css");
+      $this->rg->assets->add("$dir/{$this->field->name}.js");
+    }
+    else {
+      $this->rg->assets->add("{$this->config->paths->assets}RockGrid/fields/{$this->field->name}.css");
+      $this->rg->assets->add("{$this->config->paths->assets}RockGrid/fields/{$this->field->name}.js");
+    }
     
     if(!$this->assetsLoaded) {
       // add aggrid
