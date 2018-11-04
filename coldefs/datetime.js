@@ -1,5 +1,5 @@
 document.addEventListener('RockGridReady', function(e) {
-  RockGrid.colDefs.date = function(col) {
+  RockGrid.colDefs.datetime = function(col) {
     if(!col) return;
 
     // set coldefs
@@ -9,9 +9,9 @@ document.addEventListener('RockGridReady', function(e) {
       var date = moment(val);
 
       if(!date.isValid()) return '';
-      return date.format('YYYY/MM/DD');
+      return date.format('YYYY/MM/DD HH-mm-ss');
     }
   
-    return RockGrid.colDefs.fixedWidth(col, 100);
+    return RockGrid.colDefs.fixedWidth(col, 150);
   }
 });
