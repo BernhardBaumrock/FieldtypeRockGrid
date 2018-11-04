@@ -179,6 +179,23 @@ class InputfieldRockGrid extends Inputfield {
   }
 
   /**
+   * more verbose version of deprecated ajax() method
+   * todo: change $this->ajax to $this->ajaxActions
+   * $this->ajax is already used for the ajax setting of the grid
+   */
+  public function addAjaxAction($name, $func, $options = []) {
+    $this->ajax[$name] = [$func, $options];
+  }
+
+  /**
+   * get actions via hookable method
+   * that makes it possible to attach custom actions to any of your grids
+   */
+  public function ___getAjaxActions() {
+    return $this->ajax;
+  }
+
+  /**
    * handle AJAX requests
    * 
    * every ajax request that returns data needs to have the following parameters set
@@ -205,10 +222,12 @@ class InputfieldRockGrid extends Inputfield {
 
     // check if an ajax action callback was requested
     $action = $this->sanitizer->text($this->input->post->action);
-    if($action AND !is_string($this->ajax[$action][0]) AND is_callable($this->ajax[$action][0])) {
+    $actions = $this->getAjaxActions();
+
+    if($action AND isset($actions[$action]) AND !is_string($actions[$action][0]) AND is_callable($actions[$action][0])) {
       $payload = $this->input->post('data');
-      $func = $this->ajax[$action][0];
-      $options = $this->ajax[$action][1];
+      $func = $actions[$action][0];
+      $options = $actions[$action][1];
       if(count($options)) $data = $func->__invoke($payload, $options);
       else $data = $func->__invoke($payload);
     }
@@ -486,6 +505,8 @@ class InputfieldRockGrid extends Inputfield {
 
   /**
    * add ajax functions to this grid
+   * deprecated, for backwards compatibility
+   * use addAjaxAction instead
    */
   public function ajax($name, $func, $options = []) {
     $this->ajax[$name] = [$func, $options];
