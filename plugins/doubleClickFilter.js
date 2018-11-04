@@ -1,5 +1,7 @@
 /**
  * filter grid to current cell value on doubleclick
+ * caution: will not work with integer cell values of ZERO
+ * set a string value instead (yes = '1', no = '0')
  */
 document.addEventListener('RockGridItemLoadPlugins', function(e) {
   RockGrid.getGrid(e.target).registerPlugin(function() {
