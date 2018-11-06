@@ -7,14 +7,14 @@ document.addEventListener('RockGridReady', function(e) {
     if(options.headerName) col.headerName = RockGrid.hoverSpan(options.headerName);
 
     // default function to check wheter to return yes or no
-    var isYes = options.isYes || function(val) {
+    var isYes = options.isYes || function(val, params) {
       return parseInt(val);
     }
 
     col = RockGrid.colDefs.fixedWidth(col, 70);
     col.valueGetter = function(params) {
       var val = params.data[params.column.colId];
-      return isYes(val) ? '1' : '0';
+      return isYes(val, params) ? '1' : '0';
     }
     col.cellRenderer = function(params) {
       return params.value == '1'

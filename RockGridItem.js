@@ -100,6 +100,25 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
   }
   
   /**
+   * remove a column from a griditem
+   */
+  RockGridItem.prototype.removeColumn = function(field, showWarning) {
+    var showWarning = showWarning == null ? true : showWarning;
+    var grid = RockGrid.gridItems[this.id];
+    var colDefs = grid.gridOptions.columnDefs;
+    for(var i=0; i<colDefs.length; i++) {
+      var col = colDefs[i];
+      if(col.field == field) {
+        colDefs.splice(i, 1);
+        grid.api().setColumnDefs(colDefs);
+      }
+    }
+    if(showWarning) {
+      console.warn("cannot remove column " + field + " because it does not exist in this grid");
+    }
+  }
+
+  /**
    * set visible columns + order
    */
   RockGridItem.prototype.setColumns = function(columns) {
