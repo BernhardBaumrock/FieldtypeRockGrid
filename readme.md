@@ -410,5 +410,44 @@ document.addEventListener('RockGridItemBeforeInit', function(e) {
 ```
 
 ---
+
+# Extending Grids
+
+Sometimes several RockGrids are very similar and you don't want to duplicate your code. You can create one base file and include this file from others:
+
+```php
+// trainings.php
+$finder = new RockFinder([
+  'template' => 'training',
+  'sort' => 'from',
+], [
+  'first',
+  'from',
+  'to',
+]);
+$finder->addField('coach', ['title']);
+$finder->addField('client', ['fullname']);
+
+// trainings_booked.php
+include(__DIR__.'/trainings.php');
+
+$finder->setSelectorValue('client', $this->user); // only show trainings of current user
+$finder->addField('done'); // add column to show if the training was completed
+
+$this->setData($finder);
+```
+
+You can then create another file, for example `trainings_available.php` to show all trainings that are in the future and available for booking:
+
+```php
+include(__DIR__.'/trainings.php');
+
+$finder->setSelectorValue('from>', time());
+$finder->setSelectorValue('client', null); // client must not be set -> means available for booking
+
+$this->setData($finder);
+```
+
+
 ---
 ---
