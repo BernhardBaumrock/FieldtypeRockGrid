@@ -295,6 +295,18 @@ document.addEventListener('RockGridItemBeforeInit', function(e) {
 });
 ```
 
+## Move columns
+
+```js
+document.addEventListener('RockGridItemAfterInit', function(e) {
+  if(e.target.id != 'RockGridItem_auftragsbuch') return;
+  var grid = RockGrid.getGrid(e.target.id);
+
+  grid.columnApi().setColumnVisible('demo1', false);
+  grid.columnApi().moveColumn('demo2', 1);
+});
+```
+
 ## Listening for events
 
 See https://www.ag-grid.com/javascript-grid-reference-overview/#listening-to-events for more information and https://www.ag-grid.com/javascript-grid-events/ for all available events.

@@ -23,9 +23,9 @@ document.addEventListener('RockGridReady', function(e) {
         ;
     }
     col.cellClass = function(params) {
-      var cls = 'grid-text-center';
-      if(params.value == '1') cls += ' col-bg-green';
-      else cls += ' col-bg-red';
+      var cls = 'rg-text-center';
+      if(params.value == '1') cls += ' rg-bg-green';
+      else cls += ' rg-bg-red';
       return cls;
     }
 
