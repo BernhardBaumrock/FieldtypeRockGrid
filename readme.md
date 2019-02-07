@@ -460,6 +460,18 @@ $finder->setSelectorValue('client', null); // client must not be set -> means av
 $this->setData($finder);
 ```
 
+---
+
+## Locale support
+
+Locale support is ON by default since v0.0.19; You just need to set the correct locale when the grid is ready:
+
+```js
+document.addEventListener('RockGridReady', function(e) {
+  moment.locale('de');
+});
+```
+
 
 ---
 ---

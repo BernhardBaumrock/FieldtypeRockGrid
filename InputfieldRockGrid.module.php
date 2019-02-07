@@ -325,9 +325,14 @@ class InputfieldRockGrid extends Inputfield {
       // add aggrid
       $min = $this->config->debug ? '' : '.min';
       $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/ag-grid$min.js");
+      
+      // load moment.js
+      if($this->rg->nolocale)
+        $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/moment$min.js");
+      else
+        $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/moment-with-locales$min.js");
 
       // load necessary scripts
-      $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/moment$min.js"); // load moment.js
       $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/currency.min.js"); // load currency.js
       $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/progressbar.min.js"); // add progressbar library for batcher
 
