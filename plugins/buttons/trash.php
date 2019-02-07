@@ -1,6 +1,4 @@
-<?php
-
-use ProcessWire\WireException;
+<?php namespace ProcessWire;
 $this->ajax('trash', function($data) {
   $num = 0;
   foreach($data as $id) {
