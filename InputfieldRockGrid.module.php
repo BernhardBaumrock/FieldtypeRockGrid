@@ -24,7 +24,7 @@ class InputfieldRockGrid extends Inputfield {
     return array(
       'title' => 'RockGrid',
       'author' => 'Bernhard Baumrock, baumrock.com',
-      'version' => '0.0.16',
+      'version' => '0.0.17',
       'summary' => 'Allows rendering of agGrids in the PW admin.',
       'requires' => 'FieldtypeRockGrid', 
       );
@@ -228,10 +228,19 @@ class InputfieldRockGrid extends Inputfield {
       $payload = $this->input->post('data');
       $func = $actions[$action][0];
       $options = $actions[$action][1];
-      if(count($options)) $data = $func->__invoke($payload, $options);
-      else $data = $func->__invoke($payload);
+      $data = [];
+      if(count($options)) $response = $func->__invoke($payload, $options);
+      else $response = $func->__invoke($payload);
+
+      // log data and response
+      $data[] = (object)[
+        'action' => $action,
+        'payload' => $payload,
+        'response' => $response,
+      ];
     }
 
+    // prepare the response
     if($this->field->nocompression) {
       echo json_encode($data);
     }
