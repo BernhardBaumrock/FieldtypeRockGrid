@@ -24,7 +24,7 @@ class InputfieldRockGrid extends Inputfield {
     return array(
       'title' => 'RockGrid',
       'author' => 'Bernhard Baumrock, baumrock.com',
-      'version' => '0.0.17',
+      'version' => '0.0.18',
       'summary' => 'Allows rendering of agGrids in the PW admin.',
       'requires' => 'FieldtypeRockGrid', 
       );
@@ -335,6 +335,7 @@ class InputfieldRockGrid extends Inputfield {
       // load necessary scripts
       $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/currency.min.js"); // load currency.js
       $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/progressbar.min.js"); // add progressbar library for batcher
+      $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/papaparse$min.js"); // csv parser
 
       // add all js and css files
       // bug: i think this will also add files not present on current page?

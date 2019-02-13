@@ -51,15 +51,77 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
   }
   
   /**
-   * get data of this grid
+   * Get data of this grid.
+   * 
+   * Values set by valueGetters will NOT be included in this dataset.
    */
-  RockGridItem.prototype.getData = function(params) {
+  RockGridItem.prototype.getData = function() {
     var arr = [];
     var api = this.gridOptions.api;
     api.forEachNode(function(rowNode, index) {
       arr.push(rowNode.data);
     });
     return arr;
+  }
+
+  /**
+   * Get data of this grid as array matrix.
+   * 
+   * This will export the grid as CSV and then parse this CSV to return an array.
+   * This is for sure not the best solution, but the best I could do so far.
+   * For a list of all options see https://www.ag-grid.com/javascript-grid-export/
+   * Cell Renderers will NOT be used.
+   * Value Getters will be used.
+   * Cell Formatters will NOT be used (use processCellCallback instead).
+   */
+  RockGridItem.prototype.getDataMatrix = function(params) {
+    var api = this.api();
+    var colApi = this.gridOptions.columnApi;
+
+    // prepare params
+    // make sure to skip the header line on data export
+    var params = params || {};
+    params.skipHeader = true;
+
+    // populate columns id array
+    var colIds = [];
+    var colHeaders = [];
+    var all = colApi.getAllColumns();
+    for(var i = 0; i<all.length; i++) {
+      var item = all[i];
+      colIds.push(item.colId);
+      colHeaders.push(item.colDef.headerName);
+    }
+
+    // populate row data
+    var rows = Papa.parse(api.getDataAsCsv(params)).data;
+
+    // populate matrix object
+    var matrix = {
+      colIds: colIds,
+      colHeaders: colHeaders,
+      rows: rows,
+    }
+
+    return matrix;
+  }
+  
+  /**
+   * Get row data of DataMatrix.
+   * 
+   * A DataMatrix can be provided as second argument to not parse the data over and over again.
+   */
+  RockGridItem.prototype.getDataMatrixRow = function(rowName, matrix) {
+    var matrix = matrix || this.getDataMatrix();
+
+    // get index of colId
+    var index = false;
+    for(var i = 0; i<matrix.rows.length; i++) {
+      var row = matrix.rows[i];
+      if(row.shift() == rowName) return row;
+    }
+
+    return false;
   }
 
   /**
