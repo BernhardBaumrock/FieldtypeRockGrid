@@ -118,7 +118,8 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
     var index = false;
     for(var i = 0; i<matrix.rows.length; i++) {
       var row = matrix.rows[i];
-      if(row.shift() == rowName) return row;
+      var newRow = row.slice(); // create clone
+      if(newRow.shift() == rowName) return newRow;
     }
 
     return false;
