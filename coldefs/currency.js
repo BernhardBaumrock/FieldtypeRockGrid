@@ -1,3 +1,9 @@
+/**
+ * example:
+ * col = RockGrid.colDefs.currency(col, {
+      hideEmpty: true,
+    });
+ */
 document.addEventListener('RockGridReady', function(e) {
   RockGrid.colDefs.currency = function(colDef, params) {
     var params = params || {};
@@ -20,6 +26,8 @@ document.addEventListener('RockGridReady', function(e) {
       append: ' €',
       prepend: '',
       preset: 'euro',
+      hideEmpty: params.hideEmpty || null,
+      hideNull: params.hideNull || null,
     }
 
     return colDef;
