@@ -337,6 +337,11 @@ class InputfieldRockGrid extends Inputfield {
       $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/progressbar.min.js"); // add progressbar library for batcher
       $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/papaparse$min.js"); // csv parser
 
+      // load tippy + popper
+      $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/tippyjs-4.2.1/popper.min.js");
+      $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/tippyjs-4.2.1/tippy.min.js");
+      $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/tippyjs-4.2.1/light-border.css");
+
       // add all js and css files
       // bug: i think this will also add files not present on current page?
       foreach($dirs as $dir) {

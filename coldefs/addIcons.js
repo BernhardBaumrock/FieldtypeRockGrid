@@ -11,7 +11,7 @@ document.addEventListener('RockGridReady', function(e) {
     var adjustWidth = options.adjustWidth || true;
 
     // get the current cellRenderer where we prepend/append the icon
-    var renderer = col.cellRenderer || function(params) { return params.value; };
+    var renderer = col.cellRenderer || function(params) { return params.value || ''; };
 
     // function to get the return value of a string with tags or a callback function
     // /this/is/an/{id}/example would be /this/is/an/123/example

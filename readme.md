@@ -472,6 +472,23 @@ document.addEventListener('RockGridReady', function(e) {
 });
 ```
 
+---
+
+## Using tippy.js
+
+![img](https://i.imgur.com/5BeOfFm.png)
+
+```js
+col = grid.getColDef('ids');
+col.headerName = 'Rechnung';
+col.cellRenderer = function(params) {
+  if(!params.value) return '';
+  var ids =  params.data.ids.split(',');
+  var out = 'IDs: ' + ids.join(', ');
+  var tippy = 'One per line:<br>' + ids.join('<br>');
+  return RockGrid.tippy(out, tippy);
+}
+```
 
 ---
 ---

@@ -35,3 +35,6 @@
 .rg-bg-green {background-color: #b9ffb9;}
 .rg-bg-red {background-color: #ffb6b6;}
 .rg-bg-blue {background-color: #cae7ff;}
+
+/* hide tippy tooltips */
+.rg-tippy-hidden { display: none; }

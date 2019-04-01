@@ -232,6 +232,15 @@ function RockGrid() {
   /**
    * replace tags by value of current row
    */
+  RockGrid.prototype.tippy = function(html, tippy) {
+    var out = '<span class="rg-tippy">' + html + '</span>';
+    out += '<span class="rg-tippy-hidden">' + tippy + '</span>';
+    return out;
+  }
+
+  /**
+   * replace tags by value of current row
+   */
   RockGrid.prototype.replaceTags = function(str, params) {
     var result = str.match(/{(.*?)}/g);
     if(!result) return str;
