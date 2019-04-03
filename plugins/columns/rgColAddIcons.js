@@ -53,7 +53,7 @@ var rgColAddIcons = function(col, items) {
       if(type == 'after') after += str;
       else before += str;
     }
-
+    
     // return all markup
     if(params.value === false) return '';
     else return before + renderer(params) + after;

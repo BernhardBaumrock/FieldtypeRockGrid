@@ -17,12 +17,15 @@ document.addEventListener('RockGridReady', function(e) {
       return isYes(params) ? '1' : '0';
     }
     col.cellRenderer = function(params) {
+      if(typeof params.data.colStatsRowType != 'undefined') return '';
       return params.value == '1'
         ? '<i class="fa fa-check"></i>'
         : '<i class="fa fa-times"></i>'
         ;
     }
     col.cellClass = function(params) {
+      if(typeof params.data.colStatsRowType != 'undefined') return;
+
       var cls = 'rg-text-center';
       if(params.value == '1') cls += ' rg-bg-green';
       else cls += ' rg-bg-red';

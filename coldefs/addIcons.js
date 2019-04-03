@@ -70,6 +70,7 @@ document.addEventListener('RockGridReady', function(e) {
       }
 
       // return all markup
+      if(params.value === false) return '';
       return before + renderer(params) + after;
     }
 

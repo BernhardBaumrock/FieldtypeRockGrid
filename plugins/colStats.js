@@ -85,8 +85,10 @@ document.addEventListener('RockGridItemLoadPlugins', function(e) {
 
       // if a valueGetter is defined for this column we return that value
       var settings = this.getSettings();
-      var valueGetter = settings.values[col];
-      if(typeof valueGetter == 'function') return valueGetter();
+      if(settings) {
+        var valueGetter = settings.values[col];
+        if(typeof valueGetter == 'function') return valueGetter();
+      }
       
       return this.grid.sum(col, {selected: onlySelected, filter: true}) || null;
     }
