@@ -20,6 +20,7 @@ var rgColOptions = function(col, options) {
   if(typeof icons != 'undefined') {
     var hovers = options['hover'];
     col.cellRenderer = function(params) {
+      if(typeof params.data.colStatsRowType != 'undefined') return;
       var icon = icons[params.value];
       var hover = (typeof hovers != 'undefined' && typeof hovers[params.value] != 'undefined') ? hovers[params.value] : '';
       return typeof icon != 'undefined'
@@ -39,6 +40,7 @@ var rgColOptions = function(col, options) {
   if(typeof classes != 'undefined') {
     // classes where set
     col.cellClass = function(params) {
+      if(typeof params.data.colStatsRowType != 'undefined') return;
       var cls = classes[params.value];
       return typeof cls != 'undefined'
         ? cellClass + ' ' + cls
