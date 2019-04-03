@@ -53,18 +53,8 @@ document.addEventListener('RockGridItemLoadPlugins', function(e) {
       var columns = grid.columnApi().getAllColumns();
       for(var i=0; i<columns.length; i++) {
         var col = columns[i].colId;
-        // console.log(col);
         rowData[col] = this.getValue(col, type);
       }
-
-      // add data for each column of this grid
-      // for(var i=0; i<grid.dataColumns.length; i++) {
-      //   var col = grid.dataColumns[i];
-      //   rowData[col] = this.getValue(col, type);
-      // }
-      // console.log(rowData);
-
-      // console.log(rowData);
 
       return rowData;
     }
@@ -88,10 +78,15 @@ document.addEventListener('RockGridItemLoadPlugins', function(e) {
      * by default this returns the sum of the column
      */
     this.getValue = function(col, type) {
+      // never show stats for the id column
+      if(col == 'id') return;
+
       var onlySelected = type == 'stats' ? false : true;
 
       // if a valueGetter is defined for this column we return that value
-      // todo
+      var settings = this.getSettings();
+      var valueGetter = settings.values[col];
+      if(typeof valueGetter == 'function') return valueGetter();
       
       return this.grid.sum(col, {selected: onlySelected, filter: true}) || null;
     }
