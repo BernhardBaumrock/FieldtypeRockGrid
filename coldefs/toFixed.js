@@ -2,8 +2,6 @@ document.addEventListener('RockGridReady', function(e) {
   RockGrid.colDefs.toFixed = function(colDef, params) {
     var params = params || {};
 
-    console.log(params);
-
     // if a custom valuegetter was set, use it instead of the default one
     if(params.valueGetter) colDef.valueGetter = params.valueGetter;
     else {
