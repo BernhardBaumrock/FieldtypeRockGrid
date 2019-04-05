@@ -21,8 +21,10 @@ document.addEventListener('RockGridReady', function(e) {
     var digits = 2;
     if(typeof params.digits != 'undefined') digits = params.digits;
     colDef.cellRenderer = function(params) {
-      if(params.value === false) return '';
-      return params.value.toFixed(digits);
+      var val = params.value;
+      if(val === false) return '';
+      val = parseFloat(val || 0);
+      return val.toFixed(digits);
     }
 
     return colDef;
