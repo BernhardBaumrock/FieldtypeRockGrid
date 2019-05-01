@@ -30,6 +30,10 @@ document.addEventListener('RockGridReady', function(e) {
       for(var i=0; i<items.length; i++) {
         var item = items[i];
         str = '';
+
+        // check if filter for this icon passes
+        var filter = item.filter || function() { return true; }
+        if(filter(params) !== true) continue;
     
         // setup parameters
         var icon = item.icon || 'search';                                   // icon
