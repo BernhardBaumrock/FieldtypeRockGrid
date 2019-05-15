@@ -94,13 +94,12 @@ RockGridAction.prototype.onNo = function(e) {
 /**
  * Function to properly and efficiently update the progressbar
  */
-RockGridAction.prototype.updateProgressbar = function(event, data) {
+RockGridAction.prototype.updateProgressbar = function(event) {
+  if(event != 'end' && event != 'batchDone') return;
+
   // force update to run?
   var force = false;
   if(event == 'end') force = true;
-  else if(event == 'abort') force = true;
-  else if(event == 'batchDone') {} // do nothing
-  else return;
 
   // execute update?
   var last = this.progressBarLast;
@@ -196,7 +195,7 @@ RockGridAction.prototype.confirmStart = function(options) {
     action.addLog(event, params);
 
     // update progressbar
-    action.updateProgressbar(event, params);
+    action.updateProgressbar(event);
 
     // update gui
     var $modal = $('.RockBatcherVexConfirm').closest('.vex-content');
