@@ -8,6 +8,42 @@ AJAX requests to the server and a PHP file that executes the action on the serve
 
 See `trash.js` and `trash.php` as an example!
 
+Simple example:
+
+```js
+$(document).on('click', '#yourbutton', function() {
+  // init the Batcher
+  var Batcher = RockGrid.batcher;
+
+  // usually you get your items from a grid, see grid.pluck(...)
+  Batcher.items = [1, 2, 3, 4, 5];
+  Batcher.action = function(items) {
+    console.log(items);
+    Batcher.nextBatch();
+  };
+  Batcher.confirmStart({
+    msg: 'This is the confirm message',
+    onYes: function() {
+      console.log('Batcher confirmed');
+      Batcher.nextBatch();
+    },
+    onNo: function() {
+      console.log('Batcher aborted');
+      Batcher.abort();
+    }
+  });
+  Batcher.onStart = function() {
+    console.log('Batcher onStart()');
+  };
+  Batcher.onEnd = function() {
+    console.log('Batcher onEnd()');
+    setTimeout(function() { Batcher.vex.close(); }, 500);
+  };
+});
+```
+
+Example 2:
+
 ```js
 var Batcher = RockGrid.batcher;
 

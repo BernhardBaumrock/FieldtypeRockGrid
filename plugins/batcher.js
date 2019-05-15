@@ -1,4 +1,4 @@
-document.addEventListener('RockGridReady', function(e) {
+document.addEventListener('RockGridBeforeReady', function(e) {
   var Batcher = function() {
     // default batch size
     // 1 means it executes the callback for every single item
@@ -30,12 +30,12 @@ document.addEventListener('RockGridReady', function(e) {
     /**
      * execute this batch
      */
+    this.isAborted = false;
     this.nextBatch = function() {
       this.index++;
       var numItems = this.items.length;
       var numBatches = this.numBatches || Math.ceil(numItems / this.batchSize);
       var numTotal = this.numTotal || numItems;
-      var Batcher = this;
 
       if(this.index === 1) {
         this.numBatches = numBatches;
@@ -55,6 +55,11 @@ document.addEventListener('RockGridReady', function(e) {
       }
 
       var items = this.items.splice(0, this.batchSize);
+      
+      if(this.isAborted) {
+        console.log('Aborted Batcher, skipped ' + items.join(', '));
+        return this.nextBatch();
+      }
 
       // update text for current item
       var str = this.index + '/' + numBatches;
@@ -181,12 +186,9 @@ document.addEventListener('RockGridReady', function(e) {
      * abort current batch
      */
     this.abort = function() {
-      var Batcher = this;
-      Batcher.vex.close();
-      Batcher.action = function(items) {
-        console.log('Aborted Batcher, skipped ' + items.join(', '));
-        Batcher.nextBatch();
-      }
+      this.vex.close();
+      this.isAborted = true;
+      this.nextBatch();
     }
 
     // callback on end of batch
@@ -199,7 +201,16 @@ document.addEventListener('RockGridReady', function(e) {
       console.log('--- Batcher started ---');
     }
   }
-
-  // save batcher instance to rockgrid object
-  RockGrid.batcher = new Batcher();
+  
+  // method to return a new batcher instance
+  RockGrid.prototype.getBatcher = function() { return new Batcher(); }
+  
+  /**
+   * Add one batcher instance to the RockGrid global object
+   * 
+   * This is for backwards compatibility! Better use .getBatcher()
+   */
+  document.addEventListener('RockGridReady', function(e) {
+    RockGrid.batcher = new Batcher();
+  });
 });

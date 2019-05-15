@@ -65,6 +65,17 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
   }
 
   /**
+   * Get array of ids of this grid
+   */
+  RockGridItem.prototype.getIds = function(type) {
+    var type = type || 'all';
+    if(type == 'none') return [];
+    if(type == 'all') return this.pluck('id');
+    if(type == 'filtered') return this.pluck('id', {filter: true});
+    if(type == 'selected') return this.pluck('id', {selected: true});
+  }
+
+  /**
    * Get data of this grid as array matrix.
    * 
    * This will export the grid as CSV and then parse this CSV to return an array.

@@ -293,5 +293,6 @@ function RockGrid() {
   }
 
 // assign global rockgrid variable
+document.dispatchEvent(new Event('RockGridBeforeReady'));
 var RockGrid = new RockGrid();
 document.dispatchEvent(new Event('RockGridReady'));

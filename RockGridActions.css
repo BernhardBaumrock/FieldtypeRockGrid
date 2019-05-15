@@ -1,0 +1,23 @@
+/* clearfix inputfield to make sure that a linebreak occurs */
+.clearfix { height: 0px; outline: 0; }
+.clearfix .InputfieldContent { display: none; }
+
+/* vex dialog for batcher */
+.RockBatcherVexConfirm .log {
+  max-height: 100px;
+  overflow-y: auto;
+  background: white;
+  padding: 3px;
+  display: none;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  line-height: 0.9rem;
+}
+.RockBatcherVexConfirm .uk-text-success { color: green !important; }
+.RockBatcherVexConfirm .uk-text-warning { color: orange !important; }
+.RockBatcherVexConfirm .warning, .RockBatcherVexConfirm .error {display: none;}
+
+/* log table */
+.RockBatcherVexConfirm table { border-collapse: collapse; }
+.RockBatcherVexConfirm table td { border-bottom: 0px solid #e6e6e6; padding: 3px 0; vertical-align: top; }
+.RockBatcherVexConfirm .log tr>td:first-child {padding: 5px 8px 0 3px;text-align: center;}
