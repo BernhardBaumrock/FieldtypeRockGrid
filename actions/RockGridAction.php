@@ -40,11 +40,19 @@ abstract class RockGridAction extends Wire {
   protected $prefix;
 
   /**
+   * Result object
+   *
+   * @var RockGridActionResult
+   */
+  public $result;
+
+  /**
    * Class constructor
    */
   public function __construct() {
     $this->name = lcfirst(str_replace('RockGridAction', '', $this->className()));
     if(!$this->label) $this->label = $this->name;
+    $this->result = new RockGridActionResult();
   }
 
   /**
@@ -68,6 +76,18 @@ abstract class RockGridAction extends Wire {
   public function ___isExecutable($grid) {
     return true;
   }
+
+  /**
+   * Execute this action
+   * 
+   * This method can throw a WireException and the error message will be
+   * displayed properly in the results log of the VEX gui. See
+   * RockGridActionTrash as an example.
+   *
+   * @param object $data
+   * @return object
+   */
+  abstract public function execute($data);
 
   /**
    * Get GUI for this action

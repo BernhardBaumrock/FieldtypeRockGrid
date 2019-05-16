@@ -174,6 +174,17 @@ RockGridAction.prototype.icon = function(type) {
   return '';
 }
 
+RockGridAction.prototype.getJSON = function(data, options) {
+  // we set the endpoint of this request
+  var url = ProcessWire.config.urls.admin+'page/rockgridbatcher/';
+
+  // we set the action name of this request
+  var data = data || {};
+  data.action = this.name;
+
+  // execute the getJSON method of the batcher
+  this.batcher.getJSON(url, data, options);
+}
 
 /**
  * Show VEX confirm dialog and progressbar
@@ -184,6 +195,13 @@ RockGridAction.prototype.confirmStart = function(options) {
   var onYes = options.onYes || this.onYes;
   var onNo = options.onNo || this.onNo;
   var primaryColor;
+
+  // show alert if no items are selected
+  if(!action.getIds().length) {
+    // todo: translate
+    vex.dialog.alert('Please choose rows to execute');
+    return;
+  }
 
   act = action; // todo: remove
   

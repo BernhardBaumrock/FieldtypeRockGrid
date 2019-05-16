@@ -82,8 +82,11 @@ class RockGridActions extends WireData implements Module {
    * @return void
    */
   private function loadActions() {
-    // load the base action first
+    // load the base action and result class first
     require_once('actions/RockGridAction.php');
+    require_once('RockGridActionResult.php');
+
+
     $options = ['extensions'=>['php']];
     
     // load actions from /site/assets first
@@ -130,16 +133,19 @@ class RockGridActions extends WireData implements Module {
    *
    * @return WireArray
    */
-  public function getActions($grid = null) {
-    $actions = $this->wire(new WireArray);
-    $actions->import($this->actions->sort('name'));
-    foreach($actions as $action) {
-      if(!$action->___isExecutable($grid)) $actions->remove($action);
-    }
-    return $actions;
+  public function getActions() {
+    return $this->actions->sort('name');
   }
 
-  
+  /**
+   * Get action by name
+   *
+   * @param string $name
+   * @return RockGridAction|false
+   */
+  public function getAction($name) {
+    return $this->getActions()->findOne("name=$name");
+  }
 
   /**
    * Return the fieldset GUI for grid actions.

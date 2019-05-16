@@ -1,0 +1,80 @@
+<?php namespace ProcessWire;
+/**
+ * AJAX Endpoint for RockGridActions
+ */
+class ProcessRockGridActions extends Process {
+
+  static public function getModuleInfo() {
+    return [
+      'title' => 'RockGridActions AJAX Endpoint',
+      'summary' => 'This process is used for all AJAX calls of the RockGridActions module',
+      'version' => '0.0.1',
+      'permanent' => true,
+      'permission' => 'page-edit',
+    ];
+  }
+
+  /**
+   * Main Execute Method
+   *
+   * @return string
+   */
+  public function execute() {
+    echo $this->render();
+    die();
+  }
+
+  /**
+   * Render method to use return instead of echo
+   *
+   * @return string
+   */
+  public function render() {
+    // only allow ajax requests having method POST
+    if(!$this->config->ajax OR $this->input->requestMethod() !== 'POST')
+      return 'This page is only available via AJAX POST';
+    
+    // get ajax body
+    $request_body = file_get_contents('php://input');
+    $data = json_decode($request_body);
+    if(!$data) return "Invalid Request";
+
+    // prepare result
+    require_once('RockGridActionResult.php');
+    $result = new RockGridActionResult();
+
+    // execute action
+    try {
+      $result = $this->executeAction($data);
+    } catch (\Throwable $th) {
+      $result->type = 'error';
+      $result->msg = $th->getMessage();
+    }
+    
+    // return json encoded result
+    return json_encode($result);
+  }
+
+  /**
+   * Execute an action based on the received data
+   *
+   * @param object $data
+   * @return object
+   */
+  private function executeAction($data) {
+    $actions = $this->modules->get('RockGridActions');
+
+    // get action
+    if(!$data->action) throw new WireException("No action set in request");
+    $action = $actions->getAction($data->action);
+    if(!$action) throw new WireException("Action {$data->action} not found");
+    
+
+    // execute action
+    $result = $action->execute($data);
+
+    // return result
+    return $result;
+  }
+
+}

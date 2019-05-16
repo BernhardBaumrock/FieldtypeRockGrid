@@ -1,14 +1,26 @@
 <?php namespace ProcessWire;
 class RockGridActionTrash extends RockGridAction {
   public $label = 'Trash Items';
+  
+  /**
+   * Execute this action
+   *
+   * @param object $data
+   * @return RockGridActionResult
+   */
+  public function execute($data) {
+    $result = $this->result;
 
-  // /**
-  //  * Define where this action can be executed
-  //  *
-  //  * @param string $grid
-  //  * @return boolean
-  //  */
-  // public function ___isExecutable($grid) {
-  //   return !!$this->input->get->show;
-  // }
+    // execute items
+    $num = 0;
+    foreach($data->chunk as $id) {
+      $page = $this->pages->get($id);
+      if(!$page->trashable) throw new WireException("Item #$id is not trashable!");
+      $page->trash();
+      $num++;
+    }
+
+    $result->msg = "$num items trashed.";
+    return $result;
+  }
 }

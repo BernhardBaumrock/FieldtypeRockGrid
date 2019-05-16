@@ -14,7 +14,7 @@ class FieldtypeRockGrid extends Fieldtype {
     return array(
       'title' => 'RockGrid',
       'author' => 'Bernhard Baumrock, baumrock.com',
-      'version' => '0.0.21',
+      'version' => '0.0.22',
       'summary' => 'RockGrid Main Module',
       'requires' => ['RockFinder'],
       'installs' => ['InputfieldRockGrid'],
@@ -390,6 +390,61 @@ class FieldtypeRockGrid extends Fieldtype {
   public function getLoadQueryAutojoin(Field $field, DatabaseQuerySelect $query) {
     // we don't allow this field to be autojoined
     return null;
+  }
+
+  
+  public function up() {
+    $p = $this->pages->get("template=admin,name=RockGridBatcher");
+    $process = $this->modules->get('ProcessRockGridActions'); // install process
+    if(!$p->id) {
+      $p = $this->wire(new Page());
+      $p->template = 'admin';
+      $p->parent = 3; // admin/page/
+      $p->title = "RockGridBatcher";
+      $p->addStatus(Page::statusHidden);
+      $p->addStatus(Page::statusLocked);
+      $p->process = $process;
+      $p->save();
+    }
+    d($p, 'up');
+  }
+
+  public function down() {
+    $p = $this->pages->get("template=admin,name=rockgridbatcher");
+    if($p->id) {
+      $p->removeStatus(Page::statusLocked);
+      $p->delete();
+    }
+    d($p, 'down');
+  }
+
+  /**
+   * Upgrade Handler
+   *
+   * @param string $from
+   * @param string $to
+   * @return void
+   */
+  public function ___upgrade($from, $to) {
+
+    // version 0.0.22 upgrade/downgrade
+    if(version_compare('0.0.22', $to) < 1) {
+      $p = $this->pages->get("template=admin,name=RockGridBatcher");
+      if(!$p->id) {
+        $p = $this->wire(new Page());
+        $p->template = 'admin';
+        $p->parent = 10; // admin/pages/
+        $p->title = "RockGridBatcher";
+        $p->save();
+        bd($p);
+      }
+    }
+    else {
+      // delete page
+      $p = $this->pages->get("template=admin,name=RockGridBatcher");
+      if(!$p->id) $p->trash();
+    }
+
   }
 
   public function install() {
