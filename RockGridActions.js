@@ -6,6 +6,7 @@ $(document).on('RockGridItemReady', function() {
   RockGridItem.prototype.addAction = function(action) {
     action.grid = this;
     this.actions[action.name] = action;
+    $(document).trigger('RockGridActionAdded', action);
   }
 
   /**
@@ -38,8 +39,18 @@ $(document).on('RockGridItemReady', function() {
 $(document).on('RockGridItemAfterInit', function(e) {
   // get grid, init actions object and trigger event for loading all actions
   var grid = RockGrid.getGrid(e.target);
+  var $gui = grid.getActionsGui();
   grid.actions = {};
-  $(document).trigger('RockGridActionLoad', grid);
+  
+  // load all actions to the grid
+  var actions = ProcessWire.config['RockGridActions_'+grid.id].split('|');
+  $.each(actions, function(i, name) {
+    var action = new RockGridAction(name);
+    var batcher = action.batcher;
+    batcher.batchSize = 100;
+    batcher.minBatchDuration = 500;
+    grid.addAction(action);
+  });
 });
 
 

@@ -30,18 +30,40 @@ class RockGridActions extends WireData implements Module {
   public function init() {
     $this->loadBatcher();
     $this->loadActionAssets();
+    
+    $this->addHookBefore("InputfieldWrapper::render", $this, 'addClearfixes');
+    $this->addHookBefore("InputfieldForm::render", $this, 'setFormEnctype');
+  }
 
-    // add clearfix inputfield to this wrapper
-    $this->addHookBefore("InputfieldWrapper::render", function(HookEvent $event) {
-      $wrapper = $event->object; /** @var InputfieldWrapper $wrapper */
-      foreach($wrapper->children() as $field) {
-        $clearfix = $this->modules->get('InputfieldMarkup'); /** @var InputfieldMarkup $clearfix */
-        $clearfix->addClass('clearfix');
-        $clearfix->val('---clearfix---');
-        if($field->clearfixBefore) $wrapper->insertBefore($clearfix, $field);
-        if($field->clearfixAfter) $wrapper->insertAfter($clearfix, $field);
+  /**
+   * Add clearfix inputfields
+   *
+   * @return void
+   */
+  public function addClearfixes(HookEvent $event) {
+    $wrapper = $event->object; /** @var InputfieldWrapper $wrapper */
+    foreach($wrapper->children() as $field) {
+      $clearfix = $this->modules->get('InputfieldMarkup'); /** @var InputfieldMarkup $clearfix */
+      $clearfix->addClass('clearfix');
+      $clearfix->val('---clearfix---');
+      if($field->clearfixBefore) $wrapper->insertBefore($clearfix, $field);
+      if($field->clearfixAfter) $wrapper->insertAfter($clearfix, $field);
+    }
+  }
+
+  /**
+   * Set form enctype if a file inputfield is in the form
+   *
+   * @return void
+   */
+  public function setFormEnctype(HookEvent $event) {
+    // make sure that the form has the correct enctype
+    $form = $event->object; /** @var InputfieldForm $form */
+    foreach($form->getAll() as $inputfield) {
+      if($inputfield instanceof InputfieldFile) {
+        if(!$form->attr('enctype')) $form->attr('enctype', 'multipart/form-data');
       }
-    });
+    }
   }
 
   /**
@@ -121,7 +143,7 @@ class RockGridActions extends WireData implements Module {
 
     // get action code and add it to the array
     require_once($file);
-    $action = $this->wire(new $className());
+    $action = $this->wire(new $className()); /** @var RockGridAction $action */
     $action->init();
 
     // add action to actions array
@@ -148,17 +170,74 @@ class RockGridActions extends WireData implements Module {
   }
 
   /**
+   * Add gui to form
+   *
+   * @param string $gridname
+   * @param InputfieldForm $form
+   * @param array $options
+   * @return void
+   */
+  public function addGuiToForm($gridname, $form, $options) {
+    $gui = $this->getGui($gridname, $options);
+    $form->add($gui);
+
+    // execute submitted action
+    $action = $this->getCurrentAction($gridname);
+    if($action) {
+      try {
+        $action = $this->getAction($action);
+        $data = [];
+        foreach($this->input->post as $k=>$v) {
+          // remove the prefix from array keys because this data is used
+          // for execution of the action and the prefix is not needed
+          $k = str_replace($this->getId($gridname)."_", "", $k);
+          $data[$k] = $v;
+        }
+        $action->execute((object)$data);
+      } catch (\Throwable $th) {
+        $this->error($th->getMessage());
+      }
+    }
+  }
+
+
+  /**
+   * Return name of submitted action (that is currently shown)
+   *
+   * @return string
+   */
+  public function getCurrentAction($gridname) {
+    $id = $this->getId($gridname);
+    return $this->input->post($id."_action", 'string')
+      ?: $this->input->get('action', 'string');
+  }
+
+  /**
+   * Get id string for grid
+   *
+   * @param string $gridname
+   * @return string
+   */
+  public function getId($gridname) {
+    return "gridactions_$gridname";
+  }
+
+  /**
    * Return the fieldset GUI for grid actions.
    *
    * @return InputfieldFieldset
    */
   public function getGui($gridname, $options = []) {
     if(!$gridname) throw new WireException("First parameter must be set (gridname)!");
+    $id = $this->getId($gridname);
     $actions = $this->getActions($gridname);
+
+    // get name of current action
+    $currentAction = $this->getCurrentAction($gridname);
 
     // defaults
     $defaults = [
-      'collapsed' => Inputfield::collapsedYesAjax,
+      'collapsed' => $currentAction ? Inputfield::collapsedNo : Inputfield::collapsedYesAjax,
     ];
     $options = (object)array_merge($defaults, $options);
     
@@ -169,20 +248,20 @@ class RockGridActions extends WireData implements Module {
     $fs->gridname = $gridname;
     $fs->addClass('RockGridActionsGui');
     $fs->attr('data-grid', $gridname); // why is this applied to <ul> inside the fieldset?
-    $fs->attr('id+name', "gridactions_$gridname");
+    $fs->attr('id+name', $id);
     
     $f = $this->modules->get('InputfieldSelect'); /** @var InputfieldSelect $f */
     $f->label(__('Action'));
-    $f->attr('id+name', "{$fs->id}_action");
+    $f->attr('id+name', $id."_action");
     $f->addClass('RockGridActionSelect');
     $f->columnWidth(50);
     foreach($actions as $action) $f->addOption($action->name, $action->label);
-    $f->val($this->input->get('action', 'text'));
+    $f->val($currentAction);
     $fs->add($f);
 
     $f = $this->modules->get('InputfieldRadios'); /** @var InputfieldRadios $f */
     $f->label(__('Rows'));
-    $f->attr('id+name', "{$fs->id}_rows");
+    $f->attr('id+name', $id."_rows");
     $f->addClass('RockGridActionRows');
     $f->columnWidth(50);
     $f->addOption('none', __('None'));
@@ -198,12 +277,15 @@ class RockGridActions extends WireData implements Module {
 
     /** @var InputfieldButton $b */
     $b = $this->modules->get('InputfieldButton');
-    $b->attr('id+name', "{$fs->id}_submit");
+    $b->attr('id+name', $id."_submit");
     $b->clearfixBefore = true;
     $b->addClass('rockgridactions-execute');
     $b->val(__('Execute'));
     $b->icon('bolt');
     $fs->add($b);
+
+    // add actions to config js object
+    $this->config->js("RockGridActions_$gridname", (string)$actions);
 
     // load javascript and css assets
     foreach($actions as $action) $action->loadAssets();

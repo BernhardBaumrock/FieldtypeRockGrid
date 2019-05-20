@@ -1,5 +1,3 @@
-var act; // todo: remove
-
 /**
  * RockGridAction class
  */
@@ -76,6 +74,9 @@ RockGridAction.prototype.getGui = function() {
   return this.grid.getActionsGui().find('[data-action='+this.name+']');
 }
 
+RockGridAction.prototype.getForm = function() {
+  return this.getGui().closest('.InputfieldForm');
+}
 
 
 RockGridAction.prototype.onYes = function(e) {
@@ -192,19 +193,24 @@ RockGridAction.prototype.getJSON = function(data, options) {
 RockGridAction.prototype.confirmStart = function(options) {
   var options = options || {};
   var action = this;
+
+  // trigger event to make it possible to customize actions that are shipped
+  // with RockGrid Fieldtype
+  $(document).trigger('RockGridActionConfirmStart', action, options);
+
+  // define options
   var onYes = options.onYes || this.onYes;
   var onNo = options.onNo || this.onNo;
+  var reload = options.reload || true;
+  var closeModal = options.closeModal || 1000;
   var primaryColor;
 
   // show alert if no items are selected
   if(!action.getIds().length) {
-    // todo: translate
-    vex.dialog.alert('Please choose rows to execute');
+    vex.dialog.alert('Please choose rows to execute'); // todo: translate
     return;
   }
 
-  act = action; // todo: remove
-  
   // prepare batcher
   var batcher = this.batcher;
   batcher.reset();
@@ -227,6 +233,14 @@ RockGridAction.prototype.confirmStart = function(options) {
       $modal.find('button.vex-dialog-button-primary').fadeOut(function() {
         $modal.find('button.vex-dialog-button-secondary').text('Close'); // todo: translate
       });
+    }
+
+    // reload grid when batcher is done and close modal
+    if(event == 'end') {
+      action.grid.reload({overlay: true});
+      if(closeModal !== false) {
+        setTimeout(function() { action.modal.close(); }, closeModal);
+      }
     }
   }
   

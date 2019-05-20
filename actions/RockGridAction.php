@@ -84,7 +84,7 @@ abstract class RockGridAction extends Wire {
    * displayed properly in the results log of the VEX gui. See
    * RockGridActionTrash as an example.
    *
-   * @param object $data
+   * @param object|WireInputData $data
    * @return object
    */
   abstract public function execute($data);
