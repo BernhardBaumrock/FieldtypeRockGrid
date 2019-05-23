@@ -24,7 +24,7 @@ class InputfieldRockGrid extends Inputfield {
     return array(
       'title' => 'RockGrid',
       'author' => 'Bernhard Baumrock, baumrock.com',
-      'version' => '0.0.18',
+      'version' => '0.0.19',
       'summary' => 'Allows rendering of agGrids in the PW admin.',
       'requires' => 'FieldtypeRockGrid', 
       );
@@ -196,6 +196,17 @@ class InputfieldRockGrid extends Inputfield {
   }
 
   /**
+   * Check if current user has access to this ajax request
+   *
+   * @param string $fieldname
+   * @return bool
+   */
+  public function ___access($fieldname) {
+    if($this->user->isSuperuser()) return true;
+    return false;
+  }
+
+  /**
    * handle AJAX requests
    * 
    * every ajax request that returns data needs to have the following parameters set
@@ -207,6 +218,9 @@ class InputfieldRockGrid extends Inputfield {
     if(!$this->config->ajax) return;
     if(!$fieldname = $this->sanitizer->text($this->input->get->field)) return;
     if(!$this->input->get->RockGrid) return;
+
+    // check if the current user has access to this request
+    if(!$this->access($fieldname)) die('no access');
 
     // on ajax requests the loadAssets() method was already called but with an early exit
     // the field was not available until now, so we need to loadd the assets again
