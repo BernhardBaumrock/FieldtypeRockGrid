@@ -1,7 +1,7 @@
 document.addEventListener('RockGridReady', function(e) {
   RockGrid.colDefs.date = function(col, format) {
     if(!col) return;
-    var format = format || 'YYYY/MM/DD';
+    var format = format || 'YYYY-MM-DD';
 
     // set coldefs
     col.valueGetter = function(params) {
