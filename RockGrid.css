@@ -30,6 +30,7 @@
 
 /* text styles */
 .rg-text-center { text-align: center; }
+.rg-text-right { text-align: right; }
 
 /* background colors */
 .rg-bg-green {background-color: #b9ffb9;}

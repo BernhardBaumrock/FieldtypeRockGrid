@@ -13,7 +13,7 @@ document.addEventListener('RockGridReady', function(e) {
 
     colDef.valueGetter = function(params) {
       // if a valuegetter is already set we take this one
-      if(valueGetter) return valueGetter(params)*1;
+      if(valueGetter) return valueGetter(params); // dont convert to number here!
 
       if(typeof params.data == 'undefined') return;
       var val = params.data[colDef.field];

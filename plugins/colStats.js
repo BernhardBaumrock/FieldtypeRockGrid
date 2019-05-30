@@ -53,7 +53,8 @@ document.addEventListener('RockGridItemLoadPlugins', function(e) {
       var columns = grid.columnApi().getAllColumns();
       for(var i=0; i<columns.length; i++) {
         var col = columns[i].colId;
-        rowData[col] = this.getValue(col, type);
+        var val = this.getValue(col, type);
+        rowData[col] = val;
       }
 
       return rowData;
