@@ -443,6 +443,17 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
     return arr;
   }
 
+/* ######################### column visualisation ######################### */
+
+  /**
+   * Hide this column
+   */
+  RockGridItem.prototype.hide = function(name) {
+    var col = this.getColDef(name);
+    if(!col) return;
+    col.hide = true;
+  }
+
 /* ######################### data aggregation ######################### */
 
   /**

@@ -232,8 +232,15 @@ function RockGrid() {
   /**
    * replace tags by value of current row
    */
-  RockGrid.prototype.tippy = function(html, tippy) {
-    var out = '<span class="rg-tippy">' + html + '</span>';
+  RockGrid.prototype.tippy = function(html, tippy, options) {
+    var options = options || {};
+
+    var data = '';
+    for(prop in options) {
+      data += ' data-'+prop+'="'+options[prop]+'"';
+    }
+
+    var out = '<span class="rg-tippy" ' + data + '>' + html + '</span>';
     out += '<span class="rg-tippy-hidden">' + tippy + '</span>';
     return out;
   }
@@ -262,6 +269,7 @@ function RockGrid() {
    * wrap a span with hover info around the current string
    */
   RockGrid.prototype.hoverSpan = function(str, hovertext, icon) {
+    if(!str) return '';
     if(!hovertext) {
       hovertext = str;
       icon = false;

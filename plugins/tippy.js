@@ -7,6 +7,7 @@ $(document).on('hover', '.rg-tippy', function(e) {
     content: $pop.html(),
     interactive: true,
     arrow: true,
+    placement: $el.data('placement'),
     zIndex: 999, // pw-panels have 1000
   });
 });
