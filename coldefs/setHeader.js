@@ -6,7 +6,7 @@ document.addEventListener('RockGridItemReady', function(e) {
     // set header
     if(typeof header == "function") col.headerName = header();
     else if(typeof header == "string") col.headerName = RockGrid.hoverSpan(header);
-    else if(typeof header == "array") {
+    else if(typeof header == "object") {
       col.headerName = RockGrid.hoverSpan(
         header[0],
         header[1] || header[0],
