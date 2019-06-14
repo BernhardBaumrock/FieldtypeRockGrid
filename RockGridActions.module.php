@@ -186,14 +186,18 @@ class RockGridActions extends WireData implements Module {
     if($action) {
       try {
         $action = $this->getAction($action);
-        $data = [];
+        $data = $this->wire(new WireData());
+
+        // add post data
         foreach($this->input->post as $k=>$v) {
           // remove the prefix from array keys because this data is used
           // for execution of the action and the prefix is not needed
           $k = str_replace($this->getId($gridname)."_", "", $k);
-          $data[$k] = $v;
+          $data->set($k, $v);
         }
-        $action->execute((object)$data);
+
+        // execute this action only if a chunk is set
+        if(is_array($data->chunk)) $action->execute($data);
       } catch (\Throwable $th) {
         $this->error($th->getMessage());
       }

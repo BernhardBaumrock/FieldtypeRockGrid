@@ -64,7 +64,7 @@ RockGridAction.prototype.getRowSelectionType = function() {
  * Execute this action
  */
 RockGridAction.prototype.execute = function() {
-  vex.dialog.alert('This action cannot be executed!');
+  this.getForm().submit();
 }
 
 /**
@@ -74,10 +74,12 @@ RockGridAction.prototype.getGui = function() {
   return this.grid.getActionsGui().find('[data-action='+this.name+']');
 }
 
+/**
+ * Get the parent form element of this action
+ */
 RockGridAction.prototype.getForm = function() {
   return this.getGui().closest('.InputfieldForm');
 }
-
 
 RockGridAction.prototype.onYes = function(e) {
   $button = $(e.target).closest('button');
