@@ -274,7 +274,7 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
         // if dataset comes from a rockfinder2 we save it to the grid
         // instance and set aggrid rows via data.data attribute
         if(data.name && data.data) {
-          grid.RockFinder2 = data;
+          grid.RockFinder2 = new _RockFinder2(xhr.responseText);
           data = data.data;
         }
 
