@@ -269,7 +269,16 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4 && xhr.status == 200) {
         var httpResult = JSON.parse(xhr.responseText);
-        grid.api().setRowData(httpResult);
+        var data = httpResult;
+
+        // if dataset comes from a rockfinder2 we save it to the grid
+        // instance and set aggrid rows via data.data attribute
+        if(data.name && data.data) {
+          grid.RockFinder2 = data;
+          data = data.data;
+        }
+
+        grid.api().setRowData(data);
         grid.getDOM().dispatchEvent(new Event('RockGridAjaxDone', {bubbles:true}));
       }
     };

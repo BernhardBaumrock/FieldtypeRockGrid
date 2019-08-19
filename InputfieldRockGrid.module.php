@@ -24,7 +24,7 @@ class InputfieldRockGrid extends Inputfield {
     return array(
       'title' => 'RockGrid',
       'author' => 'Bernhard Baumrock, baumrock.com',
-      'version' => '0.0.19',
+      'version' => '0.0.20',
       'summary' => 'Allows rendering of agGrids in the PW admin.',
       'requires' => 'FieldtypeRockGrid', 
       );
@@ -137,23 +137,26 @@ class InputfieldRockGrid extends Inputfield {
     </script>
 
     <?php
-    if($this->initData AND is_object($this->initData) AND count($lines = $this->initData->debuginfo)) {
-      $lines[] = [
-        'name' => 'Overall Inputfield Render',
-        'value' => Debug::timer($timer)*1000,
-        'desc' => '',
-      ];
-      echo 'Debug Info:<table class="uk-table uk-table-striped uk-table-small">';
-      $sum = 0;
-      foreach($lines as $line) {
-        echo "<tr>";
-        echo "<td class='uk-text-right uk-table-shrink'>" . $line['value'] . "ms</td>";
-        echo "<td class='uk-table-shrink uk-text-nowrap'>" . $line['name'] . "</td>";
-        echo "<td class='uk-table-expand'>" . $line['desc'] . "</td>";
-        echo "</tr>";
-        $sum+=$line['value'];
+    if($this->initData AND is_object($this->initData)) {
+      $lines = $this->initData->debuginfo ?: null;
+      if($lines) {
+        $lines[] = [
+          'name' => 'Overall Inputfield Render',
+          'value' => Debug::timer($timer)*1000,
+          'desc' => '',
+        ];
+        echo 'Debug Info:<table class="uk-table uk-table-striped uk-table-small">';
+        $sum = 0;
+        foreach($lines as $line) {
+          echo "<tr>";
+          echo "<td class='uk-text-right uk-table-shrink'>" . $line['value'] . "ms</td>";
+          echo "<td class='uk-table-shrink uk-text-nowrap'>" . $line['name'] . "</td>";
+          echo "<td class='uk-table-expand'>" . $line['desc'] . "</td>";
+          echo "</tr>";
+          $sum+=$line['value'];
+        }
+        echo '</table>';
       }
-      echo '</table>';
     }
     ?>
     <?php
@@ -271,6 +274,12 @@ class InputfieldRockGrid extends Inputfield {
    */
   public function getDataColumns($data) {
     if($data === 'ajax') $data = $this->getData();
+
+    // RockFinder2 row?
+    if(is_object($data) AND is_array($data->data)) {
+      return array_keys((array)$data->data[0]);
+    }
+    
     if(!$data OR !count($data)) return [];
     return array_keys((array)$data[0]);
   }
@@ -517,6 +526,11 @@ class InputfieldRockGrid extends Inputfield {
         if($options['limit']) $finder->limit = ',limit=' . $options['limit'];
 
         return $finder->getObjects();
+      }
+      elseif($this->initData instanceof RockFinder2) {
+        // RockFinder was provided as datasource
+        $finder = $this->initData;
+        return $finder->getData();
       }
       else {
         // the data for this grid was set manually
