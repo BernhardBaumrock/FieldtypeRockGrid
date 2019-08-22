@@ -242,6 +242,15 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
     var to = this.getColDef(to);
     var colDefs = this.gridOptions.columnDefs;
 
+    if(typeof from == 'undefined') {
+      console.warn("from column not found");
+      return;
+    }
+    if(typeof to == 'undefined') {
+      console.warn("to column not found");
+      return;
+    }
+
     var fromindex;
     var toindex;
     for(var i = 0; i<colDefs.length; i++) {
