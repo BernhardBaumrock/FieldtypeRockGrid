@@ -154,12 +154,22 @@ function RockGridItem(gridOptions, dataColumns, frontendorbackend) {
   /**
    * get column def by field name
    */
-  RockGridItem.prototype.getColDef = function(field) {
+  RockGridItem.prototype.getColDef = function(field, callback) {
     var colDefs = RockGrid.gridItems[this.id].gridOptions.columnDefs;
+    var col = null;
     for(var i=0; i<colDefs.length; i++) {
-      if(colDefs[i].field == field) return colDefs[i];
+      if(colDefs[i].field == field) {
+        col = colDefs[i];
+      }
     }
-    console.warn("no coldef found for " + field);
+
+    if(!col) console.warn("no coldef found for " + field);
+    else {
+      // execute callback for this coldef
+      var callback = callback || function(){};
+      callback(col);
+      return col;
+    }
   }
   
   /**
