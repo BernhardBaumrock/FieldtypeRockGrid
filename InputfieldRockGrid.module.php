@@ -277,6 +277,7 @@ class InputfieldRockGrid extends Inputfield {
 
     // RockFinder2 row?
     if(is_object($data) AND is_array($data->data)) {
+      if(!count($data->data)) return [];
       return array_keys((array)$data->data[0]);
     }
     
