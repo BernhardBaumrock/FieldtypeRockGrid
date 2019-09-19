@@ -9,6 +9,8 @@ var rgColAddIcons = function(col, items) {
 
   // apply prepend and append markup
   col.cellRenderer = function(params) {
+    if(params.data.colStatsRow) return;
+
     // loop all icons
     var str = '';
     var before = '';

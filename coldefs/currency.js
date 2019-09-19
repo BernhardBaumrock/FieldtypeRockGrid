@@ -5,31 +5,34 @@
     });
  */
 document.addEventListener('RockGridReady', function(e) {
-  RockGrid.colDefs.currency = function(colDef, params) {
-    var params = params || {};
+  RockGrid.colDefs.currency = function(col, options) {
+    var options = options || {};
 
     // old valuegetter
-    var valueGetter = colDef.valueGetter || false;
+    var valueGetter = col.valueGetter || false;
 
-    colDef.valueGetter = function(params) {
+    col.valueGetter = function(params) {
       // if a valuegetter is already set we take this one
       if(valueGetter) return valueGetter(params); // dont convert to number here!
 
       if(typeof params.data == 'undefined') return;
-      var val = params.data[colDef.field];
+      var val = params.data[col.field];
       return val*1; // make sure the value is a number and not a string
     }
 
-    colDef.type = 'numericColumn';
-    colDef.cellRenderer = RockGrid.renderers.currency;
-    colDef.cellRendererParams = {
+    col.type = 'numericColumn';
+    col.cellRenderer = RockGrid.renderers.currency;
+    col.cellRendererParams = {
       append: ' €',
       prepend: '',
       preset: 'euro',
-      hideEmpty: params.hideEmpty || null,
-      hideNull: params.hideNull || null,
+      hideEmpty: options.hideEmpty || null,
+      hideNull: options.hideNull || null,
     }
 
-    return colDef;
+    // fixed width?
+    if(options.width) col = RockGrid.colDefs.fixedWidth(col, options.width);
+
+    return col;
   };
 });
