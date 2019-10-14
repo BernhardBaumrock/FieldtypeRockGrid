@@ -80,7 +80,7 @@ document.addEventListener('RockGridReady', function(e) {
 
     // finally adjust the cell width
     if(options.width) col.width = options.width;
-    else if(adjustWidth) col.width = col.width + 20*items.length;
+    else if(adjustWidth) col.width = col.width + 23*items.length;
 
     return col;
   };
