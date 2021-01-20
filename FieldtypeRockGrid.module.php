@@ -1,7 +1,7 @@
 <?php namespace ProcessWire;
 /**
  * Fieldtype to display agGrid inside the PW admin
- * 
+ *
  * Bernhard Baumrock, baumrock.com
  * MIT
  */
@@ -14,7 +14,7 @@ class FieldtypeRockGrid extends Fieldtype {
     return array(
       'title' => 'RockGrid',
       'author' => 'Bernhard Baumrock, baumrock.com',
-      'version' => '0.0.23',
+      'version' => '0.0.24',
       'summary' => 'RockGrid Main Module',
       'requires' => ['RockFinder'],
       'installs' => ['InputfieldRockGrid'],
@@ -43,7 +43,7 @@ class FieldtypeRockGrid extends Fieldtype {
         $event->return
       );
     });
-    
+
     // show only json data on ajax requests
     $this->wire->addHookBefore('Page::render', function($event) {
       $this->modules->get('InputfieldRockGrid')->handleAJAX();
@@ -237,7 +237,7 @@ class FieldtypeRockGrid extends Fieldtype {
       $f->columnWidth = 33;
       $f->showIf = 'ajax=1';
       $inputfields->add($f);
-    
+
     // set field to debug mode
       $f = $this->modules->get('InputfieldCheckbox');
       $f->attr('name', 'debug');
@@ -266,7 +266,7 @@ class FieldtypeRockGrid extends Fieldtype {
       $f->columnWidth = 33;
       $f->showIf = 'height=0';
       $inputfields->add($f);
-      
+
     // custom assets dir
       $f = $this->modules->get('InputfieldText');
       $f->attr('name', 'assetsDir');
@@ -283,7 +283,7 @@ class FieldtypeRockGrid extends Fieldtype {
     $exampleFieldset->icon = 'code';
     $exampleFieldset->notes = "See also [https://gitlab.com/baumrock/FieldtypeRockGrid/wikis/quickstart](https://gitlab.com/baumrock/FieldtypeRockGrid/wikis/quickstart)";
     $inputfields->add($exampleFieldset);
-    
+
     $f = $this->wire('modules')->get('InputfieldMarkup');
     $f->label = $assetpath.$field->name.'.php';
     $f->icon = 'file-o';
@@ -296,7 +296,7 @@ class FieldtypeRockGrid extends Fieldtype {
     $f->value =  $this->getCodeExample('01_basic-field-setup.js', $field);
     $f->notes = 'See all options here [https://www.ag-grid.com/javascript-grid-features/](https://www.ag-grid.com/javascript-grid-features/)';
     $exampleFieldset->add($f);
-    
+
     return $inputfields;
   }
 
@@ -314,12 +314,12 @@ class FieldtypeRockGrid extends Fieldtype {
 
   /**
    * Render a markup string of the value
-   * 
+   *
    * This is important for correctly rendering markup output in listers.
    *
    * @param Page $page Page that $value comes from
    * @param Field $field Field that $value comes from
-   * @param mixed $value Optionally specify the $page->getFormatted(value), value must be a formatted value. 
+   * @param mixed $value Optionally specify the $page->getFormatted(value), value must be a formatted value.
    *   If null or not specified (recommended), it will be retrieved automatically.
    * @param string $property Optionally specify the property or index to render. If omitted, entire value is rendered.
    * @return string|MarkupFieldtype Returns a string or object that can be output as a string, ready for output.
@@ -344,12 +344,12 @@ class FieldtypeRockGrid extends Fieldtype {
 
   public function getLoadQuery(Field $field, DatabaseQuerySelect $query) {
     // prevent loading from DB
-    return $query; 
+    return $query;
   }
 
   public function ___loadPageField(Page $page, Field $field) {
     // generate value at runtime rather than loading from DB
-    return null; 
+    return null;
   }
 
   public function ___savePageField(Page $page, Field $field) {
@@ -359,12 +359,12 @@ class FieldtypeRockGrid extends Fieldtype {
 
   public function ___deletePageField(Page $page, Field $field) {
     // deleting of page field not necessary
-    return true; 
+    return true;
   }
 
   public function ___deleteField(Field $field) {
     // deleting of field not necessary
-    return true; 
+    return true;
   }
 
   public function getDatabaseSchema(Field $field) {
@@ -374,14 +374,14 @@ class FieldtypeRockGrid extends Fieldtype {
 
   public function ___createField(Field $field) {
     // nothing necessary to create the field
-    return true; 
+    return true;
   }
 
   public function getMatchQuery($query, $table, $subfield, $operator, $value) {
     // we don't allow this field to be queried
     throw new WireException("Field '{$query->field->name}' is runtime and not queryable");
   }
-  
+
   public function ___getCompatibleFieldtypes(Field $field) {
     // no fieldtypes are compatible
     return new Fieldtypes();

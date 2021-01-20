@@ -1,7 +1,7 @@
 <?php namespace ProcessWire;
 /**
  * Inputfield to display agGrid inside the pw admin
- * 
+ *
  * Bernhard Baumrock, baumrock.com
  * MIT
  */
@@ -24,15 +24,15 @@ class InputfieldRockGrid extends Inputfield {
     return array(
       'title' => 'RockGrid',
       'author' => 'Bernhard Baumrock, baumrock.com',
-      'version' => '0.0.20',
+      'version' => '0.0.21',
       'summary' => 'Allows rendering of agGrids in the PW admin.',
-      'requires' => 'FieldtypeRockGrid', 
+      'requires' => 'FieldtypeRockGrid',
       );
   }
 
   public function init() {
     $this->rg = $this->modules->get('FieldtypeRockGrid');
-    
+
     // assign the current field to its reference
     // this reference is necessary for frontend rendering of the grid
     // because the field instance is not available there and is set manually
@@ -47,7 +47,7 @@ class InputfieldRockGrid extends Inputfield {
       $this->wire('modules')->get('JqueryUI')->use('vex');
     }
   }
-  
+
   /**
    * Called before render()
    *
@@ -211,7 +211,7 @@ class InputfieldRockGrid extends Inputfield {
 
   /**
    * handle AJAX requests
-   * 
+   *
    * every ajax request that returns data needs to have the following parameters set
    * - field: the fieldname, this ensures that the field is rendered even when the input setting is set to "AJAX load"
    * - RockGrid: flag variable that needs to be set to 1
@@ -280,7 +280,7 @@ class InputfieldRockGrid extends Inputfield {
       if(!count($data->data)) return [];
       return array_keys((array)$data->data[0]);
     }
-    
+
     if(!$data OR !count($data)) return [];
     return array_keys((array)$data[0]);
   }
@@ -295,13 +295,13 @@ class InputfieldRockGrid extends Inputfield {
 
   /**
    * add scripts and styles based on the field's name
-   * 
+   *
    * usage:
    * you can load css and javascript files
    * if the field's name is rg1 you can place a file /site/assets/RockGrid/fields/rg1.css|.js
    * you can use the "frontend" or "backend" class that is applied to the RockGridWrapper
    * in your css selectors to style grids differently
-   * 
+   *
    * todo: rewrite loading of assets completely
    * this method is a mess...
    */
@@ -344,12 +344,12 @@ class InputfieldRockGrid extends Inputfield {
       $this->rg->assets->add("{$this->config->paths->assets}RockGrid/fields/{$this->field->name}.css");
       $this->rg->assets->add("{$this->config->paths->assets}RockGrid/fields/{$this->field->name}.js");
     }
-    
+
     if(!$this->assetsLoaded) {
       // add aggrid
       $min = $this->config->debug ? '' : '.min';
       $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/ag-grid$min.js");
-      
+
       // load moment.js
       if($this->rg->nolocale)
         $this->rg->assets->add($this->config->paths->siteModules . "FieldtypeRockGrid/lib/moment$min.js");
@@ -445,11 +445,11 @@ class InputfieldRockGrid extends Inputfield {
 
   /**
    * set data for this field
-   * 
+   *
    * @param data string|RockFinder
-   * 
+   *
    * usage:
-   * 
+   *
    * option 1: set selector + fields used by $pages->findObjects()
    * option 2: set array of objects (custom data)
    */
@@ -533,6 +533,10 @@ class InputfieldRockGrid extends Inputfield {
         $finder = $this->initData;
         return $finder->getData();
       }
+      elseif($this->initData instanceof RockFinder3) {
+        $finder = $this->initData;
+        return $finder->getRowArray();
+      }
       else {
         // the data for this grid was set manually
         if(count($this->initData)) return $this->initData[0];
@@ -569,10 +573,10 @@ class InputfieldRockGrid extends Inputfield {
     // todo: check if that works on frontend
     // is it save to use?
     $page = new Page();
-    
+
     if($this->input->get('id')) $page = $this->pages->get($this->input->get('id'));
     if($this->process == "ProcessPageEdit") $page = $this->process->getPage();
-    
+
     // include the corresponding plugin-file
     foreach($this->files->find(__DIR__ . '/plugins', ['extensions' => ['php']]) as $plugin) {
       include($plugin);
